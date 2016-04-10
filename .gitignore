@@ -1,0 +1,13 @@
+*.class
+
+*.jar
+*.war
+
+*.swp
+*.iml
+
+.idea
+
+target
+server/target
+client/target
