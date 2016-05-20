@@ -1,0 +1,46 @@
+@CHARSET "UTF-8";
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html {}
+
+body {
+
+}
+
+div, p, button, input {
+    padding: 5px;
+}
+
+#container {
+    /*width: 960px;*/
+    /*margin: auto;*/
+    margin: 50px;
+}
+#header {
+    font-size: 24px;
+    font-style: italic;
+    padding:10px;
+}
+.login {
+    position:absolute;
+    width: 400px;
+    margin: auto;
+    height: 300px;
+    padding-top:100px;
+}
+.login .topic {
+    font-size:20px;
+    font-style:italic;
+    padding-left: 40px;
+    padding-bottom: 20px;
+}
+.container {
+    position:absolute;
+    width:600px;
+    margin-left:10px;
+    margin-right:10px;
+}

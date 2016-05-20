@@ -8,4 +8,6 @@ import pl.agh.tons.project.model.User;
  */
 public interface UserDao extends Dao<User> {
 
+    User getByEmailAndPassword(String email, String password);
+
 }

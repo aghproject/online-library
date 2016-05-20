@@ -8,7 +8,7 @@ import java.util.Date;
  * Created by pskurski on 4/14/2016.
  */
 @Entity
-@Table(name="loan", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"})})
+@Table(name="loan")
 public class Loan implements Serializable {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -20,12 +20,14 @@ public class Loan implements Serializable {
     private transient User user;
 
     @ManyToOne
-    @JoinColumn(name="book_id", nullable = false)
-    private Book book;
+    @JoinColumn(name="copy_id", nullable = false)
+    private Copy copy;
 
+    @Temporal(TemporalType.DATE)
     @Column(name="start_date")
     private Date startDate;
 
+    @Temporal(TemporalType.DATE)
     @Column(name="end_date")
     private Date endDate;
 
@@ -36,9 +38,9 @@ public class Loan implements Serializable {
         this.endDate = endDate;
     }
 
-    public Loan(User user, Book book, Date startDate, Date endDate) {
+    public Loan(User user, Copy copy, Date startDate, Date endDate) {
         this.user = user;
-        this.book = book;
+        this.copy = copy;
         this.startDate = startDate;
         this.endDate = endDate;
     }
@@ -59,12 +61,12 @@ public class Loan implements Serializable {
         this.user = user;
     }
 
-    public Book getBook() {
-        return book;
+    public Copy getCopy() {
+        return copy;
     }
 
-    public void setBook(Book book) {
-        this.book = book;
+    public void setCopy(Copy copy) {
+        this.copy = copy;
     }
 
     public Date getStartDate() {

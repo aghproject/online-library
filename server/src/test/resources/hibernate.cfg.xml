@@ -13,11 +13,11 @@
         <!-- org.hibernate.HibernateException: No CurrentSessionContext configured! -->
         <property name="hibernate.current_session_context_class">thread</property>
 
+        <!-- only for developing, automatic generator of schema -->
+        <property name="hibernate.hbm2ddl.auto">create</property>
+
         <!-- Mapping with model class containing annotations -->
         <mapping class="pl.agh.tons.project.model.User"/>
-        <mapping class="pl.agh.tons.project.model.Book"/>
-        <mapping class="pl.agh.tons.project.model.Category"/>
-        <mapping class="pl.agh.tons.project.model.Loan"/>
     </session-factory>
 </hibernate-configuration>
 

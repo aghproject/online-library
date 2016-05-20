@@ -21,10 +21,12 @@ public class UserServlet extends HttpServlet {
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(UserServlet.class);
 
     private UserService userService;
+    private WebProtocol webProtocol;
 
     @Inject
-    public UserServlet(UserService userService) {
+    public UserServlet(UserService userService, WebProtocol webProtocol) {
         this.userService = userService;
+        this.webProtocol = webProtocol;
     }
 
     protected void doGet(HttpServletRequest request,
@@ -35,7 +37,7 @@ public class UserServlet extends HttpServlet {
         if ("/member".equalsIgnoreCase(request.getServletPath())) {
             json = userService.showUsers();
         } else if ("/member/loans".equalsIgnoreCase(request.getServletPath())) {
-            User testUser = new User("Peter", "Tester", "admin@admin.pl", "admin");
+            User testUser = new User("Peter", "Tester", "admin@admin.pl", "admin", "user");
             testUser.setId(1);
             json = userService.showLoans(testUser);
         }
@@ -44,5 +46,4 @@ public class UserServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(json);
     }
-
 }

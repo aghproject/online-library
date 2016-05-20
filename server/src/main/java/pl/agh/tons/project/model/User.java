@@ -7,33 +7,36 @@ import java.io.Serializable;
  * Created by psk on 11.04.16.
  */
 @Entity
-@Table(name="user",
-        uniqueConstraints={@UniqueConstraint(columnNames={"id"})})
+@Table(name="user")
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name="id", nullable=false, unique=true, length=11)
     private int id;
 
-    @Column(name="name", length=40, nullable=false)
-    private String name;
+    @Column(name="firstname", length=45, nullable=false)
+    private String firstName;
 
-    @Column(name="last_name", length=40, nullable=false)
+    @Column(name="lastname", length=45, nullable=false)
     private String lastName;
 
-    @Column(name="email", length=40, nullable=false)
+    @Column(name="email", length=45, nullable=false)
     private String email;
 
-    @Column(name="password", length=40, nullable=false)
+    @Column(name="password", length=45, nullable=false)
     private String password;
+
+    @Column(name="role", length=10, nullable = false)
+    private String role;
 
     public User() {}
 
-    public User(String name, String lastName, String email, String password) {
-        this.name = name;
+    public User(String firstName, String lastName, String email, String password, String role) {
+        this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
+        this.role = role;
     }
 
     public int getId() {
@@ -44,12 +47,12 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getLastName() {
@@ -76,6 +79,14 @@ public class User implements Serializable {
         this.password = password;
     }
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -84,21 +95,34 @@ public class User implements Serializable {
         User user = (User) o;
 
         if (id != user.id) return false;
-        if (!email.equals(user.email)) return false;
+        if (!firstName.equals(user.firstName)) return false;
         if (!lastName.equals(user.lastName)) return false;
-        if (!name.equals(user.name)) return false;
+        if (!email.equals(user.email)) return false;
         if (!password.equals(user.password)) return false;
+        return role.equals(user.role);
 
-        return true;
     }
 
     @Override
     public int hashCode() {
         int result = id;
-        result = 31 * result + name.hashCode();
+        result = 31 * result + firstName.hashCode();
         result = 31 * result + lastName.hashCode();
         result = 31 * result + email.hashCode();
         result = 31 * result + password.hashCode();
+        result = 31 * result + role.hashCode();
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", role='" + role + '\'' +
+                '}';
     }
 }

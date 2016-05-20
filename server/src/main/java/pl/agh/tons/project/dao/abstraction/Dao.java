@@ -7,6 +7,8 @@ import java.util.List;
  */
 public interface Dao<T> {
 
+    T getById(int id);
+
     List<T> getAll();
 
     List<T> getByForeignKey(String column, int id);

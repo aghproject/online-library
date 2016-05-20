@@ -1,29 +1,32 @@
 package pl.agh.tons.project.model;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 /**
- * Created by pskurski on 4/14/2016.
+ * Created by psk on 07.05.16.
  */
 @Entity
-@Table(name="category")
-public class Category implements Serializable {
+@Table(name="author")
+public class Author {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    @Column(name="id", nullable=false, unique=true, length=11)
+    @Column(name="id", length=11, nullable=false, unique=true)
     private int id;
 
-    @Column(name="name", length=100, nullable = false)
+    @Column(name="name", length=45, nullable=true)
     private String name;
+
+    @Column(name="lastName", length=45, nullable=true)
+    private String lastName;
 
     @Column(name="desc")
     private String description;
 
-    public Category() {}
+    public Author() {}
 
-    public Category(String name, String description) {
+    public Author(String name, String lastName, String description) {
         this.name = name;
+        this.lastName = lastName;
         this.description = description;
     }
 
@@ -41,6 +44,14 @@ public class Category implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getDescription() {

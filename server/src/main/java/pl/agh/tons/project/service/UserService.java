@@ -8,7 +8,11 @@ import pl.agh.tons.project.model.User;
  */
 public interface UserService {
 
+    String getById(int id);
+
     String showUsers();
 
     String showLoans(User user);
+
+    User getByEmailAndPassword(String email, String password);
 }
