@@ -1,7 +1,7 @@
 package pl.agh.tons.project.servlet;
 
 /**
- * Created by psk on 15.05.16.
+ * Object that is used to communicate between client and server
  */
 class Response<T> {
     private boolean success;

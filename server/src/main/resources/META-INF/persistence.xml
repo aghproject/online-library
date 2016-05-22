@@ -7,6 +7,15 @@
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
 
         <!-- JPA entities must be registered here -->
+        <class>pl.agh.tons.project.model.Address</class>
+        <class>pl.agh.tons.project.model.Author</class>
+        <class>pl.agh.tons.project.model.Book</class>
+        <class>pl.agh.tons.project.model.Category</class>
+        <class>pl.agh.tons.project.model.Copy</class>
+        <class>pl.agh.tons.project.model.Feedback</class>
+        <class>pl.agh.tons.project.model.Fine</class>
+        <class>pl.agh.tons.project.model.Loan</class>
+        <class>pl.agh.tons.project.model.Reservation</class>
         <class>pl.agh.tons.project.model.User</class>
 
     <properties>

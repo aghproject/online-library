@@ -6,14 +6,8 @@ import com.google.inject.persist.PersistFilter;
 import com.google.inject.persist.jpa.JpaPersistModule;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
-import pl.agh.tons.project.dao.BookDaoImpl;
-import pl.agh.tons.project.dao.CategoryDaoImpl;
-import pl.agh.tons.project.dao.LoanDaoImpl;
-import pl.agh.tons.project.dao.UserDaoImpl;
-import pl.agh.tons.project.dao.abstraction.BookDao;
-import pl.agh.tons.project.dao.abstraction.CategoryDao;
-import pl.agh.tons.project.dao.abstraction.LoanDao;
-import pl.agh.tons.project.dao.abstraction.UserDao;
+import pl.agh.tons.project.dao.*;
+import pl.agh.tons.project.dao.abstraction.*;
 import pl.agh.tons.project.service.LoanService;
 import pl.agh.tons.project.service.LoanServiceImpl;
 import pl.agh.tons.project.service.UserService;
@@ -42,6 +36,12 @@ public class GuiceServletConfig extends GuiceServletContextListener {
                 bind(CategoryDao.class).to(CategoryDaoImpl.class);
                 bind(BookDao.class).to(BookDaoImpl.class);
                 bind(LoanDao.class).to(LoanDaoImpl.class);
+                bind(AddressDao.class).to(AddressDaoImpl.class);
+                bind(AuthorDao.class).to(AuthorDaoImpl.class);
+                bind(CopyDao.class).to(CopyDaoImpl.class);
+                bind(FeedbackDao.class).to(FeedbackDaoImpl.class);
+                bind(FineDao.class).to(FineDaoImpl.class);
+                bind(ReservationDao.class).to(ReservationDaoImpl.class);
 
                 //service bindings
                 bind(UserService.class).to(UserServiceImpl.class);

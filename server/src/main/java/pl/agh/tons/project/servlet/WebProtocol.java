@@ -10,7 +10,7 @@ import java.util.Map;
 public interface WebProtocol {
 
     /**
-     * Prepare JSON response from server
+     * Prepare JSON response from server to client
      * @return  JSON string
      */
     String prepareResponse(Response response);
