@@ -1,0 +1,686 @@
+drop database if exists kambudata;
+create database kambudata;
+use kambudata;
+
+CREATE TABLE IF NOT EXISTS `ci_sessions` (
+        `id` varchar(40) NOT NULL,
+        `ip_address` varchar(45) NOT NULL,
+        `timestamp` int(10) unsigned DEFAULT 0 NOT NULL,
+        `data` blob NOT NULL,
+        PRIMARY KEY (id),
+        KEY `ci_sessions_timestamp` (`timestamp`)
+);
+
+CREATE TABLE IF NOT EXISTS `language` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `position` int(11) DEFAULT NULL,
+    `position_modifier` int(11) DEFAULT NULL,
+    `position_moved` int(11) DEFAULT NULL,
+    `last_changed_timestamp` INT DEFAULT 1,
+    `deleted` tinyint(1) DEFAULT 0,
+    `name` varchar(128),
+    `code` varchar(2),
+    `active` tinyint(1) DEFAULT '0',
+    PRIMARY KEY (`id`),
+    KEY `code` (`code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS `user` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `position` int(11) DEFAULT NULL,
+    `position_modifier` int(11) DEFAULT NULL,
+    `position_moved` int(11) DEFAULT NULL,
+    `last_changed_timestamp` INT DEFAULT 1,
+    `deleted` tinyint(1) DEFAULT 0,
+    `display_language` varchar(2) DEFAULT NULL,
+    `password` varchar(512) DEFAULT NULL,
+    `login` varchar(512) DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `display_language` (`display_language`),
+    CONSTRAINT `user_ibfk_1` FOREIGN KEY (`display_language`) REFERENCES `language` (`code`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+INSERT INTO `language` (`name`, `code`) VALUES ('Polish', 'pl');
+INSERT INTO `user` (login, password, display_language) VALUES ('admin', MD5('admin'), 'pl');
+
+
+CREATE TABLE IF NOT EXISTS `folder` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `position` int(11) DEFAULT NULL,
+  `position_modifier` int(11) DEFAULT NULL,
+  `position_moved` int(11) DEFAULT NULL,
+  `last_changed_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `deleted` tinyint(1) DEFAULT '0',
+  `name` varchar(512) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+
+CREATE TABLE IF NOT EXISTS `file` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `position` int(11) DEFAULT NULL,
+  `position_modifier` int(11) DEFAULT NULL,
+  `position_moved` int(11) DEFAULT NULL,
+  `last_changed_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `deleted` tinyint(1) DEFAULT '0',
+  `folder_id` int(11) DEFAULT NULL,
+  `path` varchar(512) DEFAULT NULL,
+  `original_name` varchar(512) DEFAULT NULL,
+  `extension` varchar(512) DEFAULT NULL,
+  `type` varchar(512) DEFAULT NULL,
+  `size` int(11) DEFAULT NULL,
+  `width` int(11) DEFAULT NULL,
+  `height` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `folder_id` (`folder_id`),
+  CONSTRAINT `file_ibfk_1` FOREIGN KEY (`folder_id`) REFERENCES `folder` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `file_lang` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `last_changed_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `deleted` tinyint(1) DEFAULT '0',
+  `file_id` int(11) DEFAULT NULL,
+  `lang` varchar(2) NOT NULL,
+  `active` tinyint(1) NOT NULL,
+  `title` varchar(512) DEFAULT NULL,
+  `alt` varchar(512) DEFAULT NULL,
+  `name` text,
+  PRIMARY KEY (`id`),
+  KEY `file_id` (`file_id`),
+  KEY `lang` (`lang`),
+  CONSTRAINT `file_lang_ibfk_1` FOREIGN KEY (`file_id`) REFERENCES `file` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `file_lang_ibfk_2` FOREIGN KEY (`lang`) REFERENCES `language` (`code`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+-- psk 27.07.2015
+
+CREATE TABLE IF NOT EXISTS `site` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `position` int(11) DEFAULT NULL,
+    `position_modifier` int(11) DEFAULT NULL,
+    `position_moved` int(11) DEFAULT NULL,
+    `last_changed_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted` tinyint(1) DEFAULT 0,
+    `slider_id` int(11) DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `slider_id` (`slider_id`),
+    CONSTRAINT `site_ibfk_1` FOREIGN KEY (`slider_id`) REFERENCES `file` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS `site_lang` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `last_changed_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted` tinyint(1) DEFAULT 0,
+    `site_id` int(11) DEFAULT NULL,
+    `lang` varchar(2) NOT NULL,
+    `active` tinyint(1) NOT NULL,
+    `meta_title` varchar(256) DEFAULT NULL,
+    `meta_desc` varchar(256) DEFAULT NULL,
+    `title` varchar(256) DEFAULT NULL,
+    `url` varchar(512) DEFAULT NULL,
+    `text` text DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `site_id` (`site_id`),
+    KEY `lang` (`lang`),
+    CONSTRAINT `site_lang_ibfk_1` FOREIGN KEY (`lang`) REFERENCES `language` (`code`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `site_lang_ibfk_2` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+DELETE FROM `site` WHERE `id` = 1;
+INSERT INTO `site` (`id`, `position`) VALUES (1, 0);
+INSERT INTO `site_lang` (`site_id`, `lang`, `active`, `title`, `url`) VALUES (1, 'pl', 1, 'Strona główna', '');
+
+-- psk 28.07.2015
+
+UPDATE `site_lang` set `title` = 'Zajmujemy się tworzeniem spersonalizowanego oprogramowania, opracowywaniem systemów integrujących.', 
+    `meta_title` = 'Słowa kluczowe | Kambu', 
+    `meta_desc` = 'opis w przeglądarce',
+    `text` = 'Współpracujemy z przedsiębiorstwami należącymi do różnych sektorów gospodarki, dlatego nasze projekty są różnorodne i niepowtarzalne. Od początku dbamy o nieustanny rozwój członków naszego zespołu, aby jakość naszych usług pozostawała niezmiennie na wysokim poziomie.'
+    WHERE `id` = 1;
+
+CREATE TABLE IF NOT EXISTS `profile` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `position` int(11) DEFAULT NULL,
+    `position_modifier` int(11) DEFAULT NULL,
+    `position_moved` int(11) DEFAULT NULL,
+    `last_changed_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted` tinyint(1) DEFAULT 0,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS `profile_lang` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `last_changed_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted` tinyint(1) DEFAULT 0,
+    `profile_id` int(11) DEFAULT NULL,
+    `lang` varchar(2) NOT NULL,
+    `active` tinyint(1) NOT NULL,
+    `title` varchar(512) DEFAULT NULL,
+    `text` text DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `profile_id` (`profile_id`),
+    KEY `lang` (`lang`),
+    CONSTRAINT `profile_lang_ibfk_1` FOREIGN KEY (`lang`) REFERENCES `language` (`code`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `profile_lang_ibfk_2` FOREIGN KEY (`profile_id`) REFERENCES `profile` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+INSERT INTO `profile` (`id`, `position`) VALUES (1,1);
+INSERT INTO `profile` (`id`, `position`) VALUES (2,2);
+INSERT INTO `profile` (`id`, `position`) VALUES (3,3);
+INSERT INTO `profile` (`id`, `position`) VALUES (4,4);
+INSERT INTO `profile` (`id`, `position`) VALUES (5,5);
+INSERT INTO `profile` (`id`, `position`) VALUES (6,6);
+INSERT INTO `profile_lang` (`profile_id`, `lang`, `active`, `title`, `text`) VALUES (1, 'pl', 1, 'Medycyna', 'Realizujemy usługi w zakresie modernizacji rozwiązań informatycznych dla globalnych i regionalnych przedsiębiorstw należących sektora medycznego (w tym dla przedsiębiorstw notowanych na Giełdzie Papierów Wartościowych w Warszawie).');
+INSERT INTO `profile_lang` (`profile_id`, `lang`, `active`, `title`, `text`) VALUES (2, 'pl', 1, 'Automotive', 'Na zlecenie klienta działającego w strukturach globalnego koncernu motoryzacyjnego programujemy systemy wspomagające zarządzanie procesami produkcji i monitorujące linie produkcyjne w fabrykach.');
+INSERT INTO `profile_lang` (`profile_id`, `lang`, `active`, `title`, `text`) VALUES (3, 'pl', 1, 'Energetyka', 'Przygotowaliśmy również specjalistyczne oprogramowanie oraz sterowniki do rekuperatorów – central wentylacyjnych z funkcją odzyskiwania ciepła, które umożliwiają racjonalne zarządzanie energią w każdym domu.');
+INSERT INTO `profile_lang` (`profile_id`, `lang`, `active`, `title`, `text`) VALUES (4, 'pl', 1, 'Sektor non-profit', 'Zajmujemy się również realizacją projektów na rzecz administracji rządowej, samorządowej, sądów, a także organizacji non-profit. Poniżej przedstawiamy reprezentatywne przykłady naszej praktyki w obszarze współpracy z sektorem publicznym oraz pozarządowym.');
+INSERT INTO `profile_lang` (`profile_id`, `lang`, `active`, `title`, `text`) VALUES (5, 'pl', 1, 'Airports', 'Opracowujemy i wdrażamy rozwiązania informatyczne dla lotnisk, tworząc dostosowane do potrzeb firmy systemy przepustkowe, fora szkoleniowe dla pracowników oraz systemy obsługujące programy lojalnościowe.');
+INSERT INTO `profile_lang` (`profile_id`, `lang`, `active`, `title`, `text`) VALUES (6, 'pl', 1, 'Outsourcing', 'Kambu pod brandem/marką CodersValley realizuje usługi z zakresu programowania na rzecz europejskich i amerykańskich przedsiębiorstw należących do sektora IT. Szczegóły dotyczące kompetencji w tym obszarze, modelu biznesowego i proponowanych form współpracy znajdziecie Państwo na stronie brandu/marki.');
+
+CREATE TABLE IF NOT EXISTS `portfolio` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `position` int(11) DEFAULT NULL,
+    `position_modifier` int(11) DEFAULT NULL,
+    `position_moved` int(11) DEFAULT NULL,
+    `last_changed_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted` tinyint(1) DEFAULT 0,
+    `background_id` int(11) DEFAULT NULL,
+    `thumbnail_id` int(11) DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `background_id` (`background_id`),
+    KEY `thumbnail_id` (`thumbnail_id`),
+    CONSTRAINT `portfolio_ibfk_1` FOREIGN KEY (`background_id`) REFERENCES `file` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `portfolio_ibfk_2` FOREIGN KEY (`thumbnail_id`) REFERENCES `file` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS `portfolio_lang` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `last_changed_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted` tinyint(1) DEFAULT 0,
+    `portfolio_id` int(11) DEFAULT NULL,
+    `lang` varchar(2) NOT NULL,
+    `active` tinyint(1) NOT NULL,
+    `meta_title` varchar(256) DEFAULT NULL,
+    `meta_desc` varchar(256) DEFAULT NULL,
+    `title` varchar(512) DEFAULT NULL,
+    `text` text DEFAULT NULL,
+    `url` varchar(512) DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `portfolio_id` (`portfolio_id`),
+    KEY `lang` (`lang`),
+    CONSTRAINT `portfolio_lang_ibfk_1` FOREIGN KEY (`lang`) REFERENCES `language` (`code`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `portfolio_lang_ibfk_2` FOREIGN KEY (`portfolio_id`) REFERENCES `portfolio` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+INSERT INTO `portfolio` (`id`, `position`) VALUES (1,1);
+INSERT INTO `portfolio` (`id`, `position`) VALUES (2,2);
+INSERT INTO `portfolio_lang` (`portfolio_id`, `lang`, `active`, `url`, `meta_title`, `meta_desc`, `title`, `text`) VALUES (1, 'pl', 1, 'portfolio/nowy-styl-group', '', '', 'Nowy Styl Group', '');
+INSERT INTO `portfolio_lang` (`portfolio_id`, `lang`, `active`, `url`, `meta_title`, `meta_desc`, `title`, `text`) VALUES (2, 'pl', 1, 'portfolio/szlachetna-paczka', '', '', 'Szlachetna Paczka', '');
+
+CREATE TABLE IF NOT EXISTS `slider` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `position` int(11) DEFAULT NULL,
+    `position_modifier` int(11) DEFAULT NULL,
+    `position_moved` int(11) DEFAULT NULL,
+    `last_changed_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted` tinyint(1) DEFAULT 0,
+    `site_id` int(11) DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `site_id` (`site_id`),
+    CONSTRAINT `slider_ibfk_1` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS `slider_lang` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `last_changed_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted` tinyint(1) DEFAULT 0,
+    `slider_id` int(11) DEFAULT NULL,
+    `lang` varchar(2) NOT NULL,
+    `active` tinyint(1) NOT NULL,
+    `text` text DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `slider_id` (`slider_id`),
+    KEY `lang` (`lang`),
+    CONSTRAINT `slider_lang_ibfk_1` FOREIGN KEY (`lang`) REFERENCES `language` (`code`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `slider_lang_ibfk_2` FOREIGN KEY (`slider_id`) REFERENCES `slider` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+ALTER TABLE `site_lang` ADD COLUMN `slider_header` VARCHAR(256) DEFAULT NULL;
+
+ALTER TABLE `site` DROP FOREIGN KEY `site_ibfk_1`;
+ALTER TABLE `site` CHANGE COLUMN `slider_id` `image_id` INT(11) DEFAULT NULL;
+ALTER TABLE `site` ADD CONSTRAINT `site_ibfk_1` FOREIGN KEY (`image_id`) REFERENCES `file` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- psk 29.07.2015
+
+ALTER TABLE `site_lang` ADD COLUMN `text_down` TEXT DEFAULT NULL;
+ALTER TABLE `site` ADD COLUMN `view` VARCHAR(256) DEFAULT 'page/site';
+
+CREATE TABLE IF NOT EXISTS `file_site` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `position` int(11) DEFAULT NULL,
+    `position_modifier` int(11) DEFAULT NULL,
+    `position_moved` int(11) DEFAULT NULL,
+    `last_changed_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted` tinyint(1) DEFAULT 0,
+    `file_id` int(11) DEFAULT NULL,
+    `site_id` int(11) DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `file_id` (`file_id`),
+    KEY `site_id` (`site_id`),
+    CONSTRAINT `file_site_ibfk_1` FOREIGN KEY (`file_id`) REFERENCES `file` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `file_site_ibfk_2` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+INSERT INTO `site` (`id`, `position`, `view`) VALUES (2, 1, 'page/competence');
+INSERT INTO `site_lang` (`site_id`, `lang`, `active`, `title`, `url`) VALUES (2, 'pl', 1, 'Kompetencje', 'kompetencje');
+
+-- fill database with images about competence
+insert into `file` (`id`, `path`) values (4, 'img/logo/drupal.png');
+insert into `file` (`id`, `path`) values (5, 'img/logo/android.png');
+insert into `file` (`id`, `path`) values (6, 'img/logo/ios.png');
+insert into `file` (`id`, `path`) values (7, 'img/logo/windowsmobile.png');
+insert into `file` (`id`, `path`) values (8, 'img/logo/titanium.png');
+insert into `file` (`id`, `path`) values (9, 'img/logo/html5.png');
+insert into `file` (`id`, `path`) values (10, 'img/logo/css3.png');
+insert into `file` (`id`, `path`) values (11, 'img/logo/ajax.png');
+insert into `file` (`id`, `path`) values (12, 'img/logo/jquery.png');
+insert into `file` (`id`, `path`) values (13, 'img/logo/extjs.png');
+insert into `file` (`id`, `path`) values (14, 'img/logo/facebook.png');
+insert into `file` (`id`, `path`) values (15, 'img/logo/googlemaps.png');
+insert into `file` (`id`, `path`) values (16, 'img/logo/twitter.png');
+insert into `file` (`id`, `path`) values (17, 'img/logo/googleplus.png');
+insert into `file` (`id`, `path`) values (18, 'img/logo/java.png');
+insert into `file` (`id`, `path`) values (19, 'img/logo/ejb.png');
+insert into `file` (`id`, `path`) values (20, 'img/logo/hibernate.png');
+insert into `file` (`id`, `path`) values (21, 'img/logo/glassfish.png');
+insert into `file` (`id`, `path`) values (22, 'img/logo/tomcat.png');
+insert into `file` (`id`, `path`) values (23, 'img/logo/wicket.png');
+insert into `file` (`id`, `path`) values (24, 'img/logo/php.png');
+insert into `file` (`id`, `path`) values (25, 'img/logo/zend.png');
+insert into `file` (`id`, `path`) values (26, 'img/logo/tomcat.png');
+insert into `file` (`id`, `path`) values (27, 'img/logo/codeigniter.png');
+insert into `file` (`id`, `path`) values (28, 'img/logo/adobe.png');
+insert into `file` (`id`, `path`) values (29, 'img/logo/aspnet.png');
+insert into `file` (`id`, `path`) values (30, 'img/logo/oracle.png');
+insert into `file` (`id`, `path`) values (31, 'img/logo/mssql.png');
+insert into `file` (`id`, `path`) values (32, 'img/logo/postgrsql.png');
+insert into `file` (`id`, `path`) values (33, 'img/logo/mysql.png');
+insert into `file` (`id`, `path`) values (34, 'img/logo/wordpress.png');
+insert into `file` (`id`, `path`) values (35, 'img/logo/joomla.png');
+insert into `file_lang` (`file_id`, `lang`, `active`) values (4,'pl',1);
+insert into `file_lang` (`file_id`, `lang`, `active`) values (5,'pl',1);
+insert into `file_lang` (`file_id`, `lang`, `active`) values (6,'pl',1);
+insert into `file_lang` (`file_id`, `lang`, `active`) values (7,'pl',1);
+insert into `file_lang` (`file_id`, `lang`, `active`) values (8,'pl',1);
+insert into `file_lang` (`file_id`, `lang`, `active`) values (9,'pl',1);
+insert into `file_lang` (`file_id`, `lang`, `active`) values (10,'pl',1);
+insert into `file_lang` (`file_id`, `lang`, `active`) values (11,'pl',1);
+insert into `file_lang` (`file_id`, `lang`, `active`) values (12,'pl',1);
+insert into `file_lang` (`file_id`, `lang`, `active`) values (13,'pl',1);
+insert into `file_lang` (`file_id`, `lang`, `active`) values (14,'pl',1);
+insert into `file_lang` (`file_id`, `lang`, `active`) values (15,'pl',1);
+insert into `file_lang` (`file_id`, `lang`, `active`) values (16,'pl',1);
+insert into `file_lang` (`file_id`, `lang`, `active`) values (17,'pl',1);
+insert into `file_lang` (`file_id`, `lang`, `active`) values (18,'pl',1);
+insert into `file_lang` (`file_id`, `lang`, `active`) values (19,'pl',1);
+insert into `file_lang` (`file_id`, `lang`, `active`) values (20,'pl',1);
+insert into `file_lang` (`file_id`, `lang`, `active`) values (21,'pl',1);
+insert into `file_lang` (`file_id`, `lang`, `active`) values (22,'pl',1);
+insert into `file_lang` (`file_id`, `lang`, `active`) values (23,'pl',1);
+insert into `file_lang` (`file_id`, `lang`, `active`) values (24,'pl',1);
+insert into `file_lang` (`file_id`, `lang`, `active`) values (25,'pl',1);
+insert into `file_lang` (`file_id`, `lang`, `active`) values (26,'pl',1);
+insert into `file_lang` (`file_id`, `lang`, `active`) values (27,'pl',1);
+insert into `file_lang` (`file_id`, `lang`, `active`) values (28,'pl',1);
+insert into `file_lang` (`file_id`, `lang`, `active`) values (29,'pl',1);
+insert into `file_lang` (`file_id`, `lang`, `active`) values (30,'pl',1);
+insert into `file_lang` (`file_id`, `lang`, `active`) values (31,'pl',1);
+insert into `file_lang` (`file_id`, `lang`, `active`) values (32,'pl',1);
+insert into `file_lang` (`file_id`, `lang`, `active`) values (33,'pl',1);
+insert into `file_lang` (`file_id`, `lang`, `active`) values (34,'pl',1);
+insert into `file_lang` (`file_id`, `lang`, `active`) values (35,'pl',1);
+INSERT INTO `file_site` (`file_id`, `site_id`) VALUES (4,2);
+INSERT INTO `file_site` (`file_id`, `site_id`) VALUES (5,2);
+INSERT INTO `file_site` (`file_id`, `site_id`) VALUES (6,2);
+INSERT INTO `file_site` (`file_id`, `site_id`) VALUES (7,2);
+INSERT INTO `file_site` (`file_id`, `site_id`) VALUES (8,2);
+INSERT INTO `file_site` (`file_id`, `site_id`) VALUES (9,2);
+INSERT INTO `file_site` (`file_id`, `site_id`) VALUES (10,2);
+INSERT INTO `file_site` (`file_id`, `site_id`) VALUES (11,2);
+INSERT INTO `file_site` (`file_id`, `site_id`) VALUES (12,2);
+INSERT INTO `file_site` (`file_id`, `site_id`) VALUES (13,2);
+INSERT INTO `file_site` (`file_id`, `site_id`) VALUES (14,2);
+INSERT INTO `file_site` (`file_id`, `site_id`) VALUES (15,2);
+INSERT INTO `file_site` (`file_id`, `site_id`) VALUES (16,2);
+INSERT INTO `file_site` (`file_id`, `site_id`) VALUES (17,2);
+INSERT INTO `file_site` (`file_id`, `site_id`) VALUES (18,2);
+INSERT INTO `file_site` (`file_id`, `site_id`) VALUES (19,2);
+INSERT INTO `file_site` (`file_id`, `site_id`) VALUES (20,2);
+INSERT INTO `file_site` (`file_id`, `site_id`) VALUES (21,2);
+INSERT INTO `file_site` (`file_id`, `site_id`) VALUES (22,2);
+INSERT INTO `file_site` (`file_id`, `site_id`) VALUES (23,2);
+INSERT INTO `file_site` (`file_id`, `site_id`) VALUES (24,2);
+INSERT INTO `file_site` (`file_id`, `site_id`) VALUES (25,2);
+INSERT INTO `file_site` (`file_id`, `site_id`) VALUES (26,2);
+INSERT INTO `file_site` (`file_id`, `site_id`) VALUES (27,2);
+INSERT INTO `file_site` (`file_id`, `site_id`) VALUES (28,2);
+INSERT INTO `file_site` (`file_id`, `site_id`) VALUES (29,2);
+INSERT INTO `file_site` (`file_id`, `site_id`) VALUES (30,2);
+INSERT INTO `file_site` (`file_id`, `site_id`) VALUES (31,2);
+INSERT INTO `file_site` (`file_id`, `site_id`) VALUES (32,2);
+INSERT INTO `file_site` (`file_id`, `site_id`) VALUES (33,2);
+INSERT INTO `file_site` (`file_id`, `site_id`) VALUES (34,2);
+INSERT INTO `file_site` (`file_id`, `site_id`) VALUES (35,2);
+
+ALTER TABLE `site` ADD COLUMN `slider` tinyint(1) DEFAULT 0;
+
+-- psk 30.07.2015
+
+ALTER TABLE `portfolio` ADD COLUMN `view` VARCHAR(256) DEFAULT 'page/portfolio';
+
+CREATE TABLE IF NOT EXISTS `branch` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `position` int(11) DEFAULT NULL,
+    `position_modifier` int(11) DEFAULT NULL,
+    `position_moved` int(11) DEFAULT NULL,
+    `last_changed_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted` tinyint(1) DEFAULT 0,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS `branch_lang` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `last_changed_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted` tinyint(1) DEFAULT 0,
+    `branch_id` int(11) DEFAULT NULL,
+    `lang` varchar(2) NOT NULL,
+    `active` tinyint(1) NOT NULL,
+    `title` varchar(512) DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `branch_id` (`branch_id`),
+    KEY `lang` (`lang`),
+    CONSTRAINT `branch_lang_ibfk_1` FOREIGN KEY (`lang`) REFERENCES `language` (`code`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `branch_lang_ibfk_2` FOREIGN KEY (`branch_id`) REFERENCES `branch` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS `project_type` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `position` int(11) DEFAULT NULL,
+    `position_modifier` int(11) DEFAULT NULL,
+    `position_moved` int(11) DEFAULT NULL,
+    `last_changed_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted` tinyint(1) DEFAULT 0,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS `project_type_lang` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `last_changed_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted` tinyint(1) DEFAULT 0,
+    `project_type_id` int(11) DEFAULT NULL,
+    `lang` varchar(2) NOT NULL,
+    `active` tinyint(1) NOT NULL,
+    `title` varchar(512) DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `project_type_id` (`project_type_id`),
+    KEY `lang` (`lang`),
+    CONSTRAINT `project_type_lang_ibfk_1` FOREIGN KEY (`lang`) REFERENCES `language` (`code`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `project_type_lang_ibfk_2` FOREIGN KEY (`project_type_id`) REFERENCES `project_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS `technology` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `position` int(11) DEFAULT NULL,
+    `position_modifier` int(11) DEFAULT NULL,
+    `position_moved` int(11) DEFAULT NULL,
+    `last_changed_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted` tinyint(1) DEFAULT 0,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS `technology_lang` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `last_changed_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted` tinyint(1) DEFAULT 0,
+    `technology_id` int(11) DEFAULT NULL,
+    `lang` varchar(2) NOT NULL,
+    `active` tinyint(1) NOT NULL,
+    `title` varchar(512) DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `technology_id` (`technology_id`),
+    KEY `lang` (`lang`),
+    CONSTRAINT `technology_lang_ibfk_1` FOREIGN KEY (`lang`) REFERENCES `language` (`code`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `technology_lang_ibfk_2` FOREIGN KEY (`technology_id`) REFERENCES `technology` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS `branch_portfolio` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `position` int(11) DEFAULT NULL,
+    `position_modifier` int(11) DEFAULT NULL,
+    `position_moved` int(11) DEFAULT NULL,
+    `last_changed_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted` tinyint(1) DEFAULT 0,
+    `branch_id` int(11) DEFAULT NULL,
+    `portfolio_id` int(11) DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `branch_id` (`branch_id`),
+    KEY `portfolio_id` (`portfolio_id`),
+    CONSTRAINT `branch_portfolio_ibfk_1` FOREIGN KEY (`branch_id`) REFERENCES `branch` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `branch_portfolio_ibfk_2` FOREIGN KEY (`portfolio_id`) REFERENCES `portfolio` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS `project_type_portfolio` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `position` int(11) DEFAULT NULL,
+    `position_modifier` int(11) DEFAULT NULL,
+    `position_moved` int(11) DEFAULT NULL,
+    `last_changed_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted` tinyint(1) DEFAULT 0,
+    `project_type_id` int(11) DEFAULT NULL,
+    `portfolio_id` int(11) DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `project_type_id` (`project_type_id`),
+    KEY `portfolio_id` (`portfolio_id`),
+    CONSTRAINT `project_type_portfolio_ibfk_1` FOREIGN KEY (`project_type_id`) REFERENCES `project_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `project_type_portfolio_ibfk_2` FOREIGN KEY (`portfolio_id`) REFERENCES `portfolio` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS `technology_portfolio` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `position` int(11) DEFAULT NULL,
+    `position_modifier` int(11) DEFAULT NULL,
+    `position_moved` int(11) DEFAULT NULL,
+    `last_changed_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted` tinyint(1) DEFAULT 0,
+    `technology_id` int(11) DEFAULT NULL,
+    `portfolio_id` int(11) DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `technology_id` (`technology_id`),
+    KEY `portfolio_id` (`portfolio_id`),
+    CONSTRAINT `technology_portfolio_ibfk_1` FOREIGN KEY (`technology_id`) REFERENCES `technology` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `technology_portfolio_ibfk_2` FOREIGN KEY (`portfolio_id`) REFERENCES `portfolio` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+-- psk 31.07.2015
+
+CREATE TABLE IF NOT EXISTS `offer` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `position` int(11) DEFAULT NULL,
+    `position_modifier` int(11) DEFAULT NULL,
+    `position_moved` int(11) DEFAULT NULL,
+    `last_changed_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted` tinyint(1) DEFAULT 0,
+    `view` varchar(256) DEFAULT 'page/offer_subpage',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS `offer_lang` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `last_changed_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted` tinyint(1) DEFAULT 0,
+    `offer_id` int(11) DEFAULT NULL,
+    `lang` varchar(2) NOT NULL,
+    `active` tinyint(1) NOT NULL,
+    `meta_title` varchar(256) DEFAULT NULL,
+    `meta_desc` varchar(256) DEFAULT NULL,
+    `date` DATE DEFAULT NULL,
+    `title` varchar(512) DEFAULT NULL,  
+    `short_text` text DEFAULT NULL,
+    `text` text DEFAULT NULL,
+    `url` varchar(512) DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `offer_id` (`offer_id`),
+    KEY `lang` (`lang`),
+    CONSTRAINT `offer_lang_ibfk_1` FOREIGN KEY (`lang`) REFERENCES `language` (`code`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `offer_lang_ibfk_2` FOREIGN KEY (`offer_id`) REFERENCES `offer` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+INSERT INTO `site`(`id`, `view`) VALUES (3, 'page/portfolio');
+INSERT INTO `site_lang`(`site_id`, `lang`, `active`, `title`, `url`) VALUES (3, 'pl', 1, 'Portfolio', 'portfolio');
+
+INSERT INTO `site`(`id`, `view`) VALUES (4, 'page/offer');
+INSERT INTO `site_lang`(`site_id`, `lang`, `active`, `title`, `url`) VALUES (4, 'pl', 1, 'Zapytania ofertowe', 'zapytania');
+
+INSERT INTO `offer`(`id`) VALUES (1);
+INSERT INTO `offer_lang`(`offer_id`, `lang`, `active`, `date`, `url`, `title`, `short_text`, `text`) 
+    VALUES (1,'pl',1, CURRENT_DATE, 'zapytania/innowacyjna-gospodarka', 'Innowacyjna Gospodarka', 'Przeprowadzenie i opracowanie raportu z badan marketingowych dla rynku amerykańskiego, stanowiącego przedmiot realizacji Projektu w ramach działania 6.1 „Paszport do eksportu” Programu Operacyjnego Innowacyjna Gospodarka.', 'Przeprowadzenie i opracowanie raportu z badan marketingowych dla rynku amerykańskiego, stanowiącego przedmiot realizacji Projektu w ramach działania 6.1 „Paszport do eksportu” Programu Operacyjnego Innowacyjna Gospodarka.');
+
+INSERT INTO `offer`(`id`) VALUES (2);
+INSERT INTO `offer_lang`(`offer_id`, `lang`, `active`, `date`, `url`, `title`, `short_text`, `text`) 
+    VALUES (2,'pl',1, CURRENT_DATE, 'zapytania/uslugi-doradcze', 'Usługi Doradcze', 'Zakup usług doradczych w zakresie określenia, wyselekcjonowania, sprawdzenia wiarygodności grupy docelowej potencjalnych partnerów handlowych, przygotowania i wysłania ofert współpracy oraz nawiązania kontaktu - wstępnych negocjacji handlowych na rynek brytyjski, amerykański i niemiecki.', 'Zakup usług doradczych w zakresie określenia, wyselekcjonowania, sprawdzenia wiarygodności grupy docelowej potencjalnych partnerów handlowych, przygotowania i wysłania ofert współpracy oraz nawiązania kontaktu - wstępnych negocjacji handlowych na rynek brytyjski, amerykański i niemiecki.');
+
+-- psk 31.07.2015
+
+CREATE TABLE IF NOT EXISTS `career` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `position` int(11) DEFAULT NULL,
+    `position_modifier` int(11) DEFAULT NULL,
+    `position_moved` int(11) DEFAULT NULL,
+    `last_changed_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted` tinyint(1) DEFAULT 0,
+    `view` varchar(256) DEFAULT 'page/career_subpage',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS `career_lang` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `last_changed_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted` tinyint(1) DEFAULT 0,
+    `career_id` int(11) DEFAULT NULL,
+    `lang` varchar(2) NOT NULL,
+    `active` tinyint(1) NOT NULL,
+    `meta_title` varchar(256) DEFAULT NULL,
+    `meta_desc` varchar(256) DEFAULT NULL,
+    `date` DATE DEFAULT NULL,
+    `title` varchar(512) DEFAULT NULL,  
+    `short_text` text DEFAULT NULL,
+    `text` text DEFAULT NULL,
+    `url` varchar(512) DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `career_id` (`career_id`),
+    KEY `lang` (`lang`),
+    CONSTRAINT `career_lang_ibfk_1` FOREIGN KEY (`lang`) REFERENCES `language` (`code`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `career_lang_ibfk_2` FOREIGN KEY (`career_id`) REFERENCES `career` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+INSERT INTO `career`(`id`) VALUES (1);
+INSERT INTO `career_lang`(`career_id`, `lang`, `active`, `date`, `url`, `title`, `short_text`, `text`) 
+    VALUES (1,'pl',1, CURRENT_DATE, 'kariera/programista-java', 'Programista Java', 'Przeprowadzenie i opracowanie raportu z badan marketingowych dla rynku amerykańskiego, stanowiącego przedmiot realizacji Projektu w ramach działania 6.1 „Paszport do eksportu” Programu Operacyjnego Innowacyjna Gospodarka.', 'Przeprowadzenie i opracowanie raportu z badan marketingowych dla rynku amerykańskiego, stanowiącego przedmiot realizacji Projektu w ramach działania 6.1 „Paszport do eksportu” Programu Operacyjnego Innowacyjna Gospodarka.');
+
+INSERT INTO `career`(`id`) VALUES (2);
+INSERT INTO `career_lang`(`career_id`, `lang`, `active`, `date`, `url`, `title`, `short_text`, `text`) 
+    VALUES (2,'pl',1, CURRENT_DATE, 'kariera/tester-oprogramowania', 'Tester Oprogramowania', 'Zakup usług doradczych w zakresie określenia, wyselekcjonowania, sprawdzenia wiarygodności grupy docelowej potencjalnych partnerów handlowych, przygotowania i wysłania ofert współpracy oraz nawiązania kontaktu - wstępnych negocjacji handlowych na rynek brytyjski, amerykański i niemiecki.', 'Zakup usług doradczych w zakresie określenia, wyselekcjonowania, sprawdzenia wiarygodności grupy docelowej potencjalnych partnerów handlowych, przygotowania i wysłania ofert współpracy oraz nawiązania kontaktu - wstępnych negocjacji handlowych na rynek brytyjski, amerykański i niemiecki.');
+
+INSERT INTO `site`(`id`, `view`) VALUES (5, 'page/career');
+INSERT INTO `site_lang`(`site_id`, `lang`, `active`, `title`, `url`) VALUES (5, 'pl', 1, 'Kariera', 'kariera');
+
+-- psk 3.08.2015
+
+INSERT INTO `site`(`id`, `view`) VALUES (6, 'page/contact');
+INSERT INTO `site_lang`(`site_id`, `lang`, `active`, `title`, `url`) VALUES (6, 'pl', 1, 'Twoja firma planuje wdrożenie systemu informatycznego?', 'kontakt');
+
+-- psk 6.08.2015
+
+INSERT INTO `file`(`id`, `path`) VALUES (36, 'img/portfolio/portfolio_nsg.png');
+INSERT INTO `file`(`id`, `path`) VALUES (37, 'img/portfolio/portfolio_paczka.png');
+INSERT INTO `file`(`id`, `path`) VALUES (38, 'img/portfolio/portfolio_airport.png');
+INSERT INTO `file`(`id`, `path`) VALUES (39, 'img/portfolio/portfolio_hempel.png');
+INSERT INTO `file`(`id`, `path`) VALUES (40, 'img/portfolio/portfolio_medaustron.png');
+INSERT INTO `file`(`id`, `path`) VALUES (41, 'img/portfolio/portfolio_mercator.png');
+INSERT INTO `file`(`id`, `path`) VALUES (42, 'img/portfolio/portfolio_profus.png');
+INSERT INTO `file`(`id`, `path`) VALUES (43, 'img/portfolio/portfolio_vamed.png');
+INSERT INTO `file`(`id`, `path`) VALUES (44, 'img/portfolio/portfolio_zis.png');
+
+INSERT INTO `file_lang`(`file_id`, `lang`, `active`, `title`, `alt`) VALUES (36,'pl',1,'Nowy Styl Group','Nowy Styl Group');
+INSERT INTO `file_lang`(`file_id`, `lang`, `active`, `title`, `alt`) VALUES (37,'pl',1,'Szlachetna Paczka','Szlachetna Paczka');
+INSERT INTO `file_lang`(`file_id`, `lang`, `active`, `title`, `alt`) VALUES (38,'pl',1,'Airport','Opracowujemy i wdrażamy rozwiązania informatyczne dla lotnisk');
+INSERT INTO `file_lang`(`file_id`, `lang`, `active`, `title`, `alt`) VALUES (39,'pl',1,'Hempel','Hempel');
+INSERT INTO `file_lang`(`file_id`, `lang`, `active`, `title`, `alt`) VALUES (40,'pl',1,'Medaustron','Medaustron');
+INSERT INTO `file_lang`(`file_id`, `lang`, `active`, `title`, `alt`) VALUES (41,'pl',1,'Mercator Medical',' Modernizacja rozwiązań informatycznych dla przedsiębiorstw sektora medycznego');
+INSERT INTO `file_lang`(`file_id`, `lang`, `active`, `title`, `alt`) VALUES (42,'pl',1,'Prof-us','Prof-us');
+INSERT INTO `file_lang`(`file_id`, `lang`, `active`, `title`, `alt`) VALUES (43,'pl',1,'Vamed','Vamed');
+INSERT INTO `file_lang`(`file_id`, `lang`, `active`, `title`, `alt`) VALUES (44,'pl',1,'Zarząd Infrastruktury Sportowej w Krakowie','Zarząd Infrastruktury Sportowej w Krakowie');
+
+UPDATE `portfolio` set `thumbnail_id` = 36, `view` = 'page/portfolio_subpage' where `id` = 1;
+UPDATE `portfolio` set `thumbnail_id` = 37, `view` = 'page/portfolio_subpage' where `id` = 2;
+INSERT INTO `portfolio`(`id`, `thumbnail_id`, `view`) VALUES (3, 38, 'page/portfolio_subpage');
+INSERT INTO `portfolio`(`id`, `thumbnail_id`, `view`) VALUES (4, 39, 'page/portfolio_subpage');
+INSERT INTO `portfolio`(`id`, `thumbnail_id`, `view`) VALUES (5, 40, 'page/portfolio_subpage');
+INSERT INTO `portfolio`(`id`, `thumbnail_id`, `view`) VALUES (6, 41, 'page/portfolio_subpage');
+INSERT INTO `portfolio`(`id`, `thumbnail_id`, `view`) VALUES (7, 42, 'page/portfolio_subpage');
+INSERT INTO `portfolio`(`id`, `thumbnail_id`, `view`) VALUES (8, 43, 'page/portfolio_subpage');
+INSERT INTO `portfolio`(`id`, `thumbnail_id`, `view`) VALUES (9, 44, 'page/portfolio_subpage');
+
+UPDATE `portfolio_lang` set `meta_title` = 'Nowy Styl Group - Dedykowane aplikacje | Kambu', `meta_desc` = 'Zaprojektowanie dedykowanej strony internetowej oraz aplikacji mobilnej zarządzanej poprzez dopasowany do potrzeb system CMS. ', `text` = '<div class="row"> <div class="col-2"> </div> <div class="col-3"> <h3>Potrzeby</h3> <p>Nowoczesne rozwiązanie frontendowe i backendowe – stworzenie kompleksowej strony internetowej marki oraz zintegrowanego systemu wspomagającego sprzedaż.</p> <h3>Rozwiązanie</h3> <p>Zaprojektowanie strony internetowej oraz spersonalizowanej aplikacji mobilnej. Dopasowany do potrzeb klienta i zbudowany od podstaw system CMS współpracuje ze stroną internetową oraz aplikacjami działającymi dla urządzeń mobilnych z systemem Android i iOS.</p> <h3>Rezultat współpracy</h3> <p>293 realizacje i 455 różnych produktów połączonych w 1 miejscu. Zlecenie opracowania dopasowanych rozwiązań informatycznych ekspertom z dziedziny IT okazało się kluczowe z biznesowego punktu widzenia. </p> </div> <div class="col-2"> <aside> <p><b>Profil:</b> Grupa Nowy Styl jest jednym z europejskich liderów w zakresie tworzenia kompleksowych, „szytych na miarę” rozwiązań meblowych dla przestrzeni biurowych. Prężnie rozwijająca się firma posiada aż 20 lokalnych struktur sprzedaży na całym świecie. </p> <p><b>Typ projektu:</b> Web &amp; Mobile App</p> <p><b>Wielkość projektu:</b> 2 200 godz.</p> <p><b>Kraj:</b> Polska</p> <p><b>Zasoby:</b> 4 dev, 1 tester, 1 PM</p> <p><b>Technologie:</b> HTML5, CSS3, Titanium – Framework, PHP, iOS, Android, ExtJS, JQuerry, MySQL5, niestandardowe biblioteki.</p> </aside> </div> </div> <div class="row"> <div class="col-2"></div> <div class="col-4"> <p>Imponujący rozmiar oferty naszego klienta był dla nas oczywisty już od pierwszego spotkania. Podczas trwania projektu nasz podziw nieustannie wzrastał – za każdym razem, kiedy odwiedziliśmy biuro Grupy Nowy Styl, mieliśmy możliwość siedzenia na innych krzesłach.</p> </div> </div>' where `id` = 1;
+UPDATE `portfolio_lang` set `meta_title` = 'Szlachetna paczka | Kambu', `meta_desc` = 'Szlachetna paczka', `text` = '' where `id` = 2;
+INSERT INTO `portfolio_lang`(`portfolio_id`, `lang`, `active`, `meta_title`, `meta_desc`, `title`, `text`, `url`) VALUES (3,'pl',1,'Airport | Kambu','Airport','Airport','','portfolio/airport');
+INSERT INTO `portfolio_lang`(`portfolio_id`, `lang`, `active`, `meta_title`, `meta_desc`, `title`, `text`, `url`) VALUES (4,'pl',1,'Hempel | Kambu','Hempel','Hempel','','portfolio/hempel');
+INSERT INTO `portfolio_lang`(`portfolio_id`, `lang`, `active`, `meta_title`, `meta_desc`, `title`, `text`, `url`) VALUES (5,'pl',1,'Medaustron | Kambu','Medaustron','Medaustron','','portfolio/medaustron');
+INSERT INTO `portfolio_lang`(`portfolio_id`, `lang`, `active`, `meta_title`, `meta_desc`, `title`, `text`, `url`) VALUES (6,'pl',1,'Mercator Medical | Kambu','Mercator Medical','Mercator Medical','','portfolio/mercator-medical');
+INSERT INTO `portfolio_lang`(`portfolio_id`, `lang`, `active`, `meta_title`, `meta_desc`, `title`, `text`, `url`) VALUES (7,'pl',1,'Prof-us | Kambu','Prof-us','Prof-us','','portfolio/prof-us');
+INSERT INTO `portfolio_lang`(`portfolio_id`, `lang`, `active`, `meta_title`, `meta_desc`, `title`, `text`, `url`) VALUES (8,'pl',1,'Vamed | Kambu','Vamed','Vamed','','portfolio/vamed');
+INSERT INTO `portfolio_lang`(`portfolio_id`, `lang`, `active`, `meta_title`, `meta_desc`, `title`, `text`, `url`) VALUES (9,'pl',1,'ZIS | Kambu','ZIS','ZIS','','portfolio/zis');
+
+INSERT INTO `file`(`id`, `path`) VALUES (1, 'img/client.png');
+INSERT INTO `file_lang`(`file_id`, `lang`, `active`, `title`, `alt`) VALUES (1,'pl',1,'Szczęśliwy klienci','Zrealizowane projekty informatyczne');
+
+INSERT INTO `file`(`id`, `path`) VALUES (2, 'img/office-2.png');
+INSERT INTO `file_lang`(`file_id`, `lang`, `active`, `title`, `alt`) VALUES (2,'pl',2,'Kompetencje','Wykwalifikowany zespół programistów');
+
+INSERT INTO `file`(`id`, `path`) VALUES (3, 'img/office.png');
+INSERT INTO `file_lang`(`file_id`, `lang`, `active`, `title`, `alt`) VALUES (3,'pl',3,'Realizacje','Przykłady zrealizowanych w kambu projektów informatycznych');
+
+UPDATE `portfolio` set `background_id` = 3;
+UPDATE `site` set `image_id` = 1, `slider` = 1 where `id` = 1;
+UPDATE `site` set `image_id` = 2, `slider` = 1 where `id` = 2;
+
+UPDATE `site_lang` set `meta_title`= 'Oprogramowanie spersonalizowane dla przedsiębiorstw | Kambu', `meta_desc`='Zajmujemy się tworzeniem dedykowanego oprogramowania dla sektora prywatnego i publicznego. Zajmujemy się projektowaniem, wytwarzaniem, wdrażaniem, utrzymaniem i serwisem oprogramowania.', `slider_header` = 'Szczęśliwi klienci' where `id` = 1; 
+UPDATE `site_lang` set `meta_title` ='Wykwalifikowany zespół programistów to gwarancja sukcesu | Kambu', `meta_desc` ='Tworzymy nowoczesne rozwiązania IT dla sektora prywatnego i publicznego. Posiadamy doświadczenie w zakresie projektowania, wytwarzania, wdrażania, utrzymania i serwisu oprogramowania.', `text`='<h1>Tworzymy rozwiązania IT w&nbsp;metodykach zwinnych. Słuchamy potrzeb naszych klientów.</h1> <h3>Jesteśmy AGILE</h3> <p>AGILE, metoda rozwoju oprogramowania, zakłada podzielenie dużego projektu na małe kawałki, które mogą być zakodowane w przewidywalnym czasie. Dzięki temu efekt naszej pracy widoczny jest po zakończeniu każdego małego etapu. Zakres prac może w pełni odpowiadać bieżącym potrzebom.</p> <h3>Prostota. Zalety wykorzystywania AGILE w IT</h3> <p>Dzięki metodyce AGILE projekty IT są szybkie i elastyczne. Jako nowoczesna metodyka daje ogromne możliwości bliskiej współpracy klienta i dostawcy usług. W naszej pracy wykorzystujemy metodologię SCRUM oraz system JIRA, co dodatkowo podnosi naszą efektywność i pomaga dbać o najwyższą jakość naszych usług.</p> <h3>W trosce o jakość</h3> <p>Kambu Sp. z o.o. posiada certyfikat ISO 9001:2008 potwierdzający, że System Zarządzania przez Jakość funkcjonujący w Spółce spełnia wymagania normy ISO 9001:2008 w zakresie: sprzedaży, projektowania, wytwarzania, wdrażania, utrzymania i serwisu oprogramowania oraz sprzedaży sprzętu komputerowego.</p>', `slider_header`='"Dziewięć kobiet nie urodzi dziecka w jeden miesiąc." – Prawo Brooksa', `text_down`='<h3>Jesteśmy z Krakowa</h3> <p>Nasze studio programistyczne znajduje się w stolicy małopolski – Krakowie. To miasto, będące centrum akademickim Polski, niezmiennie przyciąga doskonale wykwalifikowanych pracowników, którzy pragną rozwijać swoje kompetencje w cyfrowej stolicy Polski. Pasja i zaangażowanie to cechy szczególnie cenione w biznesie, dlatego coraz więcej przedsiębiorców zleca realizację określonych usług krakowskim przedsiębiorstwom z sektora IT. Dzięki temu Kraków od 2014 roku utrzymuje w wielu rankingach pozycję lidera w zakresie usług outsourcingowych dla biznesu.</p> <h3>Nasz zespół</h3> <p>Pasja i zaangażowanie to również cechy charakteryzujące nasz zespół. Od 2010 roku wykonujemy prace programistyczne w różnych obszarach biznesowych. Naszym priorytetem jest dostarczenie klientom odpowiednich narzędzi, które ułatwią mu zarządzanie organizacją, zapewnią niezbędny rozwój oraz umożliwią dalszą ekspansję. Od kiedy pojawiliśmy się na rynku sukcesywnie zdobywamy doświadczenie poprzez współpracę z różnorodnymi branżami – medyczną, automotive, z sektorem publicznym oraz organizacjami non-profit.</p> <h3>Pozyskiwanie funduszy z UE</h3> <p>Kompetencje i kwalifikacje członków naszego zespołu pozwalają także zaoferować Państwu pomoc w zakresie pozyskiwania funduszy niezbędnych do realizacji projektów związanych z inwestycjami w sektorze IT. Jeżeli zastanawiają się Państwo, w jaki sposób pozyskać dla swojego projektu wsparcie finansowe ze środków Unii Europejskiej, nasi pracownicy służą swoim doświadczeniem, pomocą organizacyjną i prawną.</p>' where `id` = 2;
+
+INSERT INTO `slider`(`id`,`site_id`) VALUES (1, 1);
+INSERT INTO `slider`(`id`,`site_id`) VALUES (2, 2);
+INSERT INTO `slider_lang`(`slider_id`, `lang`, `active`, `text`) VALUES (1,'pl',1,'<p>Zajmujemy się również realizacją projektów na rzecz administracji rządowej, samorządowej, sądów, a także organizacji non-profit. Poniżej przedstawiamy reprezentatywne przykłady naszej praktyki w obszarze współpracy z sektorem publicznym oraz pozarządowym.</p><p>Maryla Moszyńska</br>Prezes Zarządu Mostfood Sp. z o.o.</p>');                         
+INSERT INTO `slider_lang`(`slider_id`, `lang`, `active`, `text`) VALUES (2,'pl',1,'<p>Programowanie zwinne dowodzi, że w wielu przypadkach niewielki zespół jest bardziej efektywny niż duży. Wielkie zespoły są jak Big Data. Im więcej połączeń, tym więcej problemów. W Kambu pracujemy sprytnie w niewielkich zespołach dostosowanych do potrzeb klienta.</p>');
+
+INSERT INTO `technology`(`id`) VALUES (1);
+INSERT INTO `technology`(`id`) VALUES (2);
+INSERT INTO `technology_lang`(`technology_id`, `lang`, `active`, `title`) VALUES (1,'pl',1,'PHP');
+INSERT INTO `technology_lang`(`technology_id`, `lang`, `active`, `title`) VALUES (2,'pl',1,'Java');
+
+INSERT INTO `branch`(`id`) VALUES (1);
+INSERT INTO `branch`(`id`) VALUES (2);
+INSERT INTO `branch`(`id`) VALUES (3);
+INSERT INTO `branch`(`id`) VALUES (4);
+INSERT INTO `branch_lang`(`branch_id`, `lang`, `active`, `title`) VALUES (1,'pl',1,'Medycyna');
+INSERT INTO `branch_lang`(`branch_id`, `lang`, `active`, `title`) VALUES (2,'pl',1,'Energetyka');
+INSERT INTO `branch_lang`(`branch_id`, `lang`, `active`, `title`) VALUES (3,'pl',1,'Sektor non-profit');
+INSERT INTO `branch_lang`(`branch_id`, `lang`, `active`, `title`) VALUES (4,'pl',1,'Lotniska');
+
+INSERT INTO `project_type`(`id`) VALUES (1);
+INSERT INTO `project_type`(`id`) VALUES (2);
+INSERT INTO `project_type`(`id`) VALUES (3);
+INSERT INTO `project_type_lang`(`project_type_id`, `lang`, `active`, `title`) VALUES (1,'pl',1,'Web &amp; Mobile App');
+INSERT INTO `project_type_lang`(`project_type_id`, `lang`, `active`, `title`) VALUES (2,'pl',1,'Custom Software Development');
+INSERT INTO `project_type_lang`(`project_type_id`, `lang`, `active`, `title`) VALUES (3,'pl',1,'System Integration');
