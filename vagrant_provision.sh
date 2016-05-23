@@ -28,10 +28,22 @@ sudo apt-get install oracle-java7-installer
 echo "Setting environment variables for Java 7.."
 sudo apt-get install -y oracle-java7-set-default
 
+echo "Creating project database.."
 service apache2 stop
-mysql -uroot -ptest < /vagrant/database/db_changes.sql
+mysql -uroot -ptest < /vagrant/vagrant/database/db_changes.sql
 service apache2 start
 
 cd /vagrant
-sudo mvn clean install tomcat7:run-war-only
+sudo mvn clean install
+
+echo "Coping project WAR to tomcat deploy directory"
+sudo cp -rf target/online-library-1.0-SNAPSHOT.war /var/lib/tomcat7/webapps/ROOT.war
+sudo rm -rf /var/lib/tomcat7/webapps/ROOT
+
+cd /etc/default
+sudo su
+echo "JAVA_HOME=/usr/lib/jvm/java-7-oracle" >> tomcat7
+
+service tomcat7 restart
+echo "Project can be run from URL http://192.168.33.10:8080"
 

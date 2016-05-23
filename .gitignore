@@ -7,7 +7,6 @@
 *.iml
 
 .idea
+.vagrant
 
 target
-server/target
-client/target

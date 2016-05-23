@@ -2,7 +2,6 @@ drop database if exists onlinelibrary;
 create database onlinelibrary;
 use onlinelibrary;
 
-
 CREATE TABLE IF NOT EXISTS `user` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `firstname` VARCHAR(45) NOT NULL,
