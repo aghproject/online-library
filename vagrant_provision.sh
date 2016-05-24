@@ -37,8 +37,11 @@ cd /vagrant
 sudo mvn clean install
 
 echo "Coping project WAR to tomcat deploy directory"
-sudo cp -rf target/online-library-1.0-SNAPSHOT.war /var/lib/tomcat7/webapps/ROOT.war
+#sudo cp -rf target/online-library-1.0-SNAPSHOT.war /var/lib/tomcat7/webapps/ROOT.war
+#sudo rm -rf /var/lib/tomcat7/webapps/ROOT
+
 sudo rm -rf /var/lib/tomcat7/webapps/ROOT
+sudo ln -fs /vagrant/target/online-library-1.0-SNAPSHOT/ /var/lib/tomcat7/webapps/ROOT
 
 cd /etc/default
 sudo su
