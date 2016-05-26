@@ -10,6 +10,7 @@ libraryApp.controller('LoginController', function ($scope, $http) {
     $scope.response = {};
     $scope.notAuth = true;
     $scope.book = {};
+    $scope.userId = "";
 
     $scope.submit = function () {
         $scope.data = {
@@ -22,10 +23,12 @@ libraryApp.controller('LoginController', function ($scope, $http) {
         $http.post("/login", $scope.data)
             .then(function (response) {
                 $scope.response = response.data;
+                $scope.userId = response.data.content.id;
+
                 if ($scope.response.success == true) {
                     $scope.notAuth = false;
 
-                    $http.get("/loan?id="+$scope.response.content.id+"")
+                    $http.get("/loan?id="+$scope.userId+"")
                         .then(function (response) {
                             $scope.book = response.data.content;
                             console.log($scope.book);

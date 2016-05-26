@@ -11,6 +11,9 @@
 
     <!-- CONTROLLERS -->
     <script src="angularjs/controller/login.js"></script>
+    <script src="angularjs/controller/loan.js"></script>
+    <script src="angularjs/controller/reservation.js"></script>
+    <script src="angularjs/controller/returnBook.js"></script>
 
     <!-- CSS -->
     <link rel="stylesheet" type="text/css" href="style/style.css">
@@ -38,28 +41,19 @@
         <div ng-show="!notAuth">
             <p>{{response.msg}}</p>
             <div class="container">
-                <table class="table table-bordered table-striped">
-                    <thead>
-                    <tr>
-                        <td>Id</td>
-                        <td>Wypozyczona</td>
-                        <td>Zwrot</td>
-                        <td>Tytul</td>
-                        <td>Kategoria</td>
-                        <td>Autor</td>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr ng-repeat="item in book">
-                        <td>{{ item.id }}</td>
-                        <td>{{ item.startDate }}</td>
-                        <td>{{ item.endDate }}</td>
-                        <td>{{ item.copy.book.title }}</td>
-                        <td>{{ item.copy.book.category.name }}</td>
-                        <td>{{ item.copy.book.author.name }} {{item.copy.book.author.lastName}}</td>
-                    </tr>
-                    </tbody>
-                </table>
+                <ng-include src="'view/booklist.html'"></ng-include>
+
+                <div>
+                    <div ng-controller="LoanController">
+                        <ng-include src="'view/loanbook.html'"></ng-include>
+                    </div>
+                    <div ng-controller="ReservationController">
+                        <ng-include src="'view/reservationbook.html'"></ng-include>
+                    </div>
+                    <div ng-controller="BookReturnController">
+                        <ng-include src="'view/returnbook.html'"></ng-include>
+                    </div>
+                </div>
             </div>
         </div>
 

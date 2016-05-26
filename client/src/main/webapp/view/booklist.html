@@ -1,0 +1,22 @@
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <td>Id</td>
+        <td>Wypozyczona</td>
+        <td>Zwrot</td>
+        <td>Tytul</td>
+        <td>Kategoria</td>
+        <td>Autor</td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="item in book">
+        <td>{{ item.id }}</td>
+        <td>{{ item.startDate }}</td>
+        <td>{{ item.endDate }}</td>
+        <td>{{ item.copy.book.title }}</td>
+        <td>{{ item.copy.book.category.name }}</td>
+        <td>{{ item.copy.book.author.name }} {{item.copy.book.author.lastName}}</td>
+    </tr>
+    </tbody>
+</table>

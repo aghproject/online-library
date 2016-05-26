@@ -8,10 +8,7 @@ import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
 import pl.agh.tons.project.dao.*;
 import pl.agh.tons.project.dao.abstraction.*;
-import pl.agh.tons.project.service.LoanService;
-import pl.agh.tons.project.service.LoanServiceImpl;
-import pl.agh.tons.project.service.UserService;
-import pl.agh.tons.project.service.UserServiceImpl;
+import pl.agh.tons.project.service.*;
 import pl.agh.tons.project.servlet.*;
 
 /**
@@ -30,6 +27,9 @@ public class GuiceServletConfig extends GuiceServletContextListener {
                 //servlets mapping
                 serve("/login").with(LoginServlet.class);
                 serve("/loan").with(LoanServlet.class);
+                serve("/book").with(BookServlet.class);
+                serve("/book/author").with(AuthorServlet.class);
+                serve("/book/category").with(CategoryServlet.class);
 
                 //dao bindings
                 bind(UserDao.class).to(UserDaoImpl.class);
@@ -46,6 +46,7 @@ public class GuiceServletConfig extends GuiceServletContextListener {
                 //service bindings
                 bind(UserService.class).to(UserServiceImpl.class);
                 bind(LoanService.class).to(LoanServiceImpl.class);
+                bind(BookService.class).to(BookServiceImpl.class);
                 bind(WebProtocol.class).to(WebProtocolImpl.class);
             }
         });
