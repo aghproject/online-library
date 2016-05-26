@@ -1,6 +1,11 @@
 <button ng-click="loan(userId)">Wypozycz ksiazke</button>
 <div ng-show="showView">
-    <div>loan view</div>
+    <form ng-submit="submit(bookId, userId)">
+        <p>
+            Podaj id ksiazki: <input type="text" name="bookId" ng-model="bookId"/>
+            &nbsp;<input type="submit" name="submit" value="Zatwierdz"/>
+        </p>
+    </form>
     <table class="table table-bordered table-striped">
         <thead>
         <tr>

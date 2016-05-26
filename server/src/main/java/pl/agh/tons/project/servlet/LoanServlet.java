@@ -42,5 +42,11 @@ public class LoanServlet extends HttpServlet {
         Response<User> response = new Response(loans);
         httpResponse.getWriter().write(webProtocol.prepareResponse(response));
     }
+
+    protected void doPost(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
+                                                        throws IOException, ServletException {
+
+
+    }
 }
 
