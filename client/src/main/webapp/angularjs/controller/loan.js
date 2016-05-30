@@ -1,10 +1,10 @@
 libraryApp.controller("LoanController", function ($scope, $http) {
-    $scope.books = {};
+    $scope.copies = {};
     $scope.showView = false;
     $scope.response = {};
     $scope.data = {};
 
-    $scope.loan = function(userId) {
+    $scope.getCopies = function(userId) {
         console.log("loan works, userId: " + userId);
         $scope.userId = userId;
         if ($scope.showView) {
@@ -14,10 +14,10 @@ libraryApp.controller("LoanController", function ($scope, $http) {
         }
 
         if ($scope.showView) {
-            $http.get("/book")
+            $http.get("/copy")
                 .then(function (response) {
-                    $scope.books = response.data.content;
-                    console.log($scope.books);
+                    $scope.copies = response.data.content;
+                    console.log($scope.copies);
                 }, function (response) {
                 });
         }

@@ -17,10 +17,26 @@ public class Copy {
     @JoinColumn(name="book_id", nullable=false)
     private Book book;
 
+    @Column(name="rented", nullable=false)
+    private int rented;
+
     public Copy() {}
 
     public Copy(Book book) {
         this.book = book;
+    }
+
+    public Copy(Book book, int rented) {
+        this.book = book;
+        this.rented = rented;
+    }
+
+    public int getRented() {
+        return rented;
+    }
+
+    public void setRented(int rented) {
+        this.rented = rented;
     }
 
     public int getId() {

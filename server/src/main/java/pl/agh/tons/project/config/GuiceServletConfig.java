@@ -28,6 +28,7 @@ public class GuiceServletConfig extends GuiceServletContextListener {
                 serve("/login").with(LoginServlet.class);
                 serve("/loan").with(LoanServlet.class);
                 serve("/book").with(BookServlet.class);
+                serve("/copy").with(CopyServlet.class);
                 serve("/book/author").with(AuthorServlet.class);
                 serve("/book/category").with(CategoryServlet.class);
 
@@ -35,6 +36,7 @@ public class GuiceServletConfig extends GuiceServletContextListener {
                 bind(UserDao.class).to(UserDaoImpl.class);
                 bind(CategoryDao.class).to(CategoryDaoImpl.class);
                 bind(BookDao.class).to(BookDaoImpl.class);
+                bind(CopyDao.class).to(CopyDaoImpl.class);
                 bind(LoanDao.class).to(LoanDaoImpl.class);
                 bind(AddressDao.class).to(AddressDaoImpl.class);
                 bind(AuthorDao.class).to(AuthorDaoImpl.class);
@@ -46,6 +48,7 @@ public class GuiceServletConfig extends GuiceServletContextListener {
                 //service bindings
                 bind(UserService.class).to(UserServiceImpl.class);
                 bind(LoanService.class).to(LoanServiceImpl.class);
+                bind(CopyService.class).to(CopyServiceImpl.class);
                 bind(BookService.class).to(BookServiceImpl.class);
                 bind(WebProtocol.class).to(WebProtocolImpl.class);
             }
