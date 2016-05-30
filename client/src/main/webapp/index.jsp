@@ -41,9 +41,10 @@
         <div ng-show="!notAuth">
             <p>{{response.msg}}</p>
             <div class="container">
-                <ng-include src="'view/booklist.html'"></ng-include>
-
                 <div>
+                    <div ng-controller="LoanController">
+                        <ng-include src="'view/booklist.html'"></ng-include>
+                    </div>
                     <div ng-controller="LoanController">
                         <ng-include src="'view/loanbook.html'"></ng-include>
                     </div>

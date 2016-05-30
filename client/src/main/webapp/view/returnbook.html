@@ -1,4 +1,9 @@
 <button ng-click="returnBook(userId)">Zwroc ksiazke</button>
 <div ng-show="showView">
-    <div>Book Return Form</div>
+    <form ng-submit="submit(copyId, userId)">
+        <p>
+            Podaj id ksiazki do zwrotu: <input type="text" name="copyId" ng-model="copyId"/>
+            &nbsp;<input type="submit" name="submit" value="Zatwierdz"/>
+        </p>
+    </form>
 </div>

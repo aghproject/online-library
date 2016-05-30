@@ -5,7 +5,7 @@ libraryApp.controller("LoanController", function ($scope, $http) {
     $scope.data = {};
 
     $scope.getCopies = function(userId) {
-        console.log("loan works, userId: " + userId);
+        console.log("getCopies works, userId: " + userId);
         $scope.userId = userId;
         if ($scope.showView) {
             $scope.showView = false;
@@ -22,6 +22,24 @@ libraryApp.controller("LoanController", function ($scope, $http) {
                 });
         }
     };
+    
+    $scope.getLoans = function(userId) {
+        console.log("getLoans works, userId: " + userId);
+        $scope.userId = userId;
+        if ($scope.showView) {
+            $scope.showView = false;
+        } else {
+            $scope.showView = true;
+        }
+
+        if ($scope.showView) {
+            $http.get("/loan?user_id="+userId+"")
+                .then(function (response) {
+                    $scope.book = response.data.content;
+                    console.log($scope.book);
+                }, function (response) {});
+        }
+    }
     
     $scope.submit = function (copyId, userId) {
         $scope.data = {

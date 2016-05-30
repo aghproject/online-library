@@ -27,12 +27,6 @@ libraryApp.controller('LoginController', function ($scope, $http) {
                 if ($scope.response.success == true) {
                     $scope.userId = response.data.content.id;
                     $scope.notAuth = false;
-
-                    $http.get("/loan?user_id="+$scope.userId+"")
-                        .then(function (response) {
-                            $scope.book = response.data.content;
-                            console.log($scope.book);
-                        }, function (response) {});
                 }
             }, function (response) {});
     };

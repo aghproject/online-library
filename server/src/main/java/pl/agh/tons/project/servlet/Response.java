@@ -16,7 +16,7 @@ class Response<T> {
             this.msg = "Nieprawidlowe dane uzytkownika!";
         } else {
             this.success = true;
-            this.msg = "Twoje wypozyczone ksiazki:";
+            this.msg = "Witamy!:";
         }
 
         this.content = content;
