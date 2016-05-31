@@ -46,9 +46,22 @@ public class LoanServiceImpl implements LoanService {
 
         User user = userDao.getById(userId);
         Copy copy = copyDao.getById(copyId);
-        Loan newLoan = new Loan(user, copy, new Date(), new Date());
+        Loan newLoan = new Loan(user, copy, new Date(), new Date(), 0);
 
         loanDao.addLoan(newLoan);
+    }
+
+    @Override
+    @Transactional
+    public void returnBook(int copyId, int userId) {
+        copyDao.setNotRented(copyId);
+
+        User user = userDao.getById(userId);
+        Copy copy = copyDao.getById(copyId);
+        Loan loan = new Loan(user, copy, new Date(), new Date(), 1);
+
+        loanDao.setLoan(loan);
+        //todo: check if return date is valid (based on dates in loan table)
     }
 
 }

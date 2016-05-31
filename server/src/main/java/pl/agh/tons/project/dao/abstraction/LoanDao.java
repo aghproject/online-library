@@ -7,4 +7,6 @@ import pl.agh.tons.project.model.Loan;
  */
 public interface LoanDao extends Dao<Loan> {
     void addLoan(Loan loan);
+
+    void setLoan(Loan loan);
 }

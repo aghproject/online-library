@@ -34,4 +34,12 @@ public class CopyDaoImpl extends AbstractDao<Copy> implements CopyDao {
 
         entityManagerFactory.get().<Copy>merge(copy);
     }
+
+    @Override
+    public void setNotRented(int copyId) {
+        Copy copy = getById(copyId);
+        copy.setRented(0);
+
+        entityManagerFactory.get().<Copy>merge(copy);
+    }
 }

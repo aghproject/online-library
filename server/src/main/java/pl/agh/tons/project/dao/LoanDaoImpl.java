@@ -8,6 +8,7 @@ import pl.agh.tons.project.model.Loan;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.util.List;
 
 /**
  * Created by pskurski on 4/14/2016.
@@ -21,7 +22,22 @@ public class LoanDaoImpl extends AbstractDao<Loan> implements LoanDao {
 
     @Override
     public void addLoan(Loan loan) {
-//        entityManagerFactory.get().merge(loan);
         entityManagerFactory.get().persist(loan);
+    }
+
+    @Override
+    public void setLoan(Loan loan) {
+        entityManagerFactory.get().merge(loan);
+    }
+
+    @Override
+    public List<Loan> getByForeignKey(String column, int id) {
+
+        Query query =  entityManagerFactory.get().createQuery("from "+ clazz.getSimpleName() +
+                " WHERE "+column+" = :"+column+" AND archive = 0");
+        query.setParameter(column, id);
+        List<Loan> list = (List<Loan>) query.getResultList();
+
+        return list;
     }
 }

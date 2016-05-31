@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS `reservation` (
 CREATE TABLE IF NOT EXISTS `copy` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `book_id` INT NULL,
-  `rented` TINYINT(1),
+  `rented` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_copy_1`
   FOREIGN KEY (`book_id`)
@@ -98,6 +98,7 @@ CREATE TABLE IF NOT EXISTS `loan` (
   `user_id` INT NULL,
   `start_date` DATE NULL,
   `end_date` VARCHAR(45) NULL,
+  `archive` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_loan_1`
   FOREIGN KEY (`copy_id`)
@@ -165,9 +166,9 @@ INSERT INTO `copy` VALUES (2, 2, 1);
 INSERT INTO `copy` VALUES (3, 3, 1);
 INSERT INTO `copy` VALUES (4, 2, 0);
 INSERT INTO `copy` VALUES (5, 3, 0);
-INSERT INTO `loan` VALUES (1, 1, 1, '2015-12-12', '2015-01-01');
-INSERT INTO `loan` VALUES (2, 2, 1, '2015-12-19', '2015-02-01');
-INSERT INTO `loan` VALUES (3, 3, 1, '2015-12-23', '2015-04-01');
+INSERT INTO `loan` VALUES (1, 1, 1, '2015-12-12', '2015-01-01', 0);
+INSERT INTO `loan` VALUES (2, 2, 1, '2015-12-19', '2015-02-01', 0);
+INSERT INTO `loan` VALUES (3, 3, 1, '2015-12-23', '2015-04-01', 0);
 INSERT INTO `fine` VALUES (1, 1, 1, '2016-01-01', '2016-10-01', 10.00, '0');
 INSERT INTO `feedback` VALUES (1, 1, 1, 'komentarz do pustyni i puszczy', 3);
 

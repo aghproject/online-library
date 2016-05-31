@@ -11,4 +11,6 @@ public interface CopyDao extends Dao<Copy> {
     List<Copy> getAllNotRentedBooks();
 
     void setRented(int copyId);
+
+    void setNotRented(int copyId);
 }

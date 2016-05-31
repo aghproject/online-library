@@ -13,6 +13,8 @@ public interface LoanService {
 
     List<Loan> getLoans(int userId);
 
-    void loanBook(int bookId, int userId);
+    void loanBook(int copyId, int userId);
+
+    void returnBook(int copyId, int userId);
 
 }

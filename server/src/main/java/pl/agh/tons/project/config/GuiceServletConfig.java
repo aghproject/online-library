@@ -27,6 +27,7 @@ public class GuiceServletConfig extends GuiceServletContextListener {
                 //servlets mapping
                 serve("/login").with(LoginServlet.class);
                 serve("/loan").with(LoanServlet.class);
+                serve("/loan/return").with(ReturnServlet.class);
                 serve("/book").with(BookServlet.class);
                 serve("/copy").with(CopyServlet.class);
                 serve("/book/author").with(AuthorServlet.class);

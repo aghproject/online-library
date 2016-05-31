@@ -31,6 +31,9 @@ public class Loan implements Serializable {
     @Column(name="end_date")
     private Date endDate;
 
+    @Column(name="archive", nullable=false)
+    private int archive;
+
     public Loan() {}
 
     public Loan(Date startDate, Date endDate) {
@@ -43,6 +46,22 @@ public class Loan implements Serializable {
         this.copy = copy;
         this.startDate = startDate;
         this.endDate = endDate;
+    }
+
+    public Loan(User user, Copy copy, Date startDate, Date endDate, int archive) {
+        this.user = user;
+        this.copy = copy;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.archive = archive;
+    }
+
+    public int getArchive() {
+        return archive;
+    }
+
+    public void setArchive(int archive) {
+        this.archive = archive;
     }
 
     public int getId() {
