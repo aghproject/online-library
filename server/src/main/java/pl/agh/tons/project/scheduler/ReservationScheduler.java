@@ -1,5 +1,8 @@
 package pl.agh.tons.project.scheduler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -10,6 +13,8 @@ import static java.util.concurrent.TimeUnit.*;
  * Created by pskurski on 6/1/2016.
  */
 public class ReservationScheduler {
+    private static final Logger LOG = LoggerFactory.getLogger(ReservationScheduler.class);
+
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     /**
@@ -33,7 +38,7 @@ public class ReservationScheduler {
     }
 
     public void job() {
-        System.out.println("beep");
+        LOG.debug("Execution of scheduled task!");
 
         // todo: get reservations from database
         // todo: get copies from database

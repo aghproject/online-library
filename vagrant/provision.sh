@@ -30,6 +30,10 @@ service apache2 stop
 mysql -uroot -ptest < /vagrant/vagrant/database/db_changes.sql
 service apache2 start
 
+# file permission for logging, timezone
+sudo chmod -R 777 /vagrant/vagrant/
+timedatectl set-timezone Europe/Warsaw
+
 cd /vagrant
 sudo mvn clean install
 

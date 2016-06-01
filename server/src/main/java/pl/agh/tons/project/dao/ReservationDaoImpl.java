@@ -32,9 +32,9 @@ public class ReservationDaoImpl extends AbstractDao<Reservation> implements Rese
 
     @Override
     public Reservation getReservation(int userId, int bookId) {
-        Query query = entityManagerFactory.get().createQuery("from Reservation WHERE user_id := userId AND" +
-                " book_id := bookId");
-        query.setParameter("user_id", userId);
+        Query query = entityManagerFactory.get().createQuery("from Reservation WHERE user.id = :userId AND" +
+                " book.id = :bookId");
+        query.setParameter("userId", userId);
         query.setParameter("bookId", bookId);
 
         return (Reservation) query.getResultList().get(0);

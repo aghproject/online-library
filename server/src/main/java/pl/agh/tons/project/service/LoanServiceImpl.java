@@ -64,6 +64,7 @@ public class LoanServiceImpl implements LoanService {
 
         User user = userDao.getById(userId);
         Copy copy = copyDao.getById(copyId);
+        // todo: get loan from database and update (not create new)
         Loan loan = new Loan(user, copy, new Date(), new Date(), 1);
 
         loanDao.setLoan(loan);

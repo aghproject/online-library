@@ -4,7 +4,9 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.agh.tons.project.model.User;
+import pl.agh.tons.project.scheduler.ReservationScheduler;
 import pl.agh.tons.project.service.UserService;
 
 import javax.persistence.EntityManager;
@@ -21,13 +23,15 @@ import java.util.Map;
 @Singleton
 public class LoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(LoginServlet.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LoginServlet.class);
 
     private UserService userService;
     private WebProtocol webProtocol;
 
     @Inject
     public LoginServlet(UserService userService, WebProtocol webProtocol) {
+        LOG.debug("Create login servlet...");
+
         this.userService = userService;
         this.webProtocol = webProtocol;
     }

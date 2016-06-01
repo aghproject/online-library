@@ -44,7 +44,7 @@ public class CopyDaoImpl extends AbstractDao<Copy> implements CopyDao {
 
     @Override
     public List<Copy> getNotRentedCopies(int bookId) {
-        Query query = entityManagerFactory.get().createQuery("from Copy WHERE rented=0 AND book_id := bookId");
+        Query query = entityManagerFactory.get().createQuery("from Copy WHERE rented=0 AND book.id = :bookId");
         query.setParameter("bookId", bookId);
 
         return (List<Copy>) query.getResultList();
