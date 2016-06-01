@@ -18,6 +18,10 @@
     <listener-class>pl.agh.tons.project.config.GuiceServletConfig</listener-class>
   </listener>
 
+  <listener>
+    <listener-class>pl.agh.tons.project.config.TaskContextListener</listener-class>
+  </listener>
+
   <!--<servlet>-->
     <!--<servlet-name>MemberRestController</servlet-name>-->
     <!--<servlet-class>pl.agh.tons.project.service.UserService</servlet-class>-->
