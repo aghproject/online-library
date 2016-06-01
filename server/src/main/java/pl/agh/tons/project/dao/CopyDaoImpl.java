@@ -28,8 +28,7 @@ public class CopyDaoImpl extends AbstractDao<Copy> implements CopyDao {
     }
 
     @Override
-    public void setRented(int copyId) {
-        Copy copy = getById(copyId);
+    public void setRented(Copy copy) {
         copy.setRented(1);
 
         entityManagerFactory.get().<Copy>merge(copy);
@@ -41,5 +40,13 @@ public class CopyDaoImpl extends AbstractDao<Copy> implements CopyDao {
         copy.setRented(0);
 
         entityManagerFactory.get().<Copy>merge(copy);
+    }
+
+    @Override
+    public List<Copy> getNotRentedCopies(int bookId) {
+        Query query = entityManagerFactory.get().createQuery("from Copy WHERE rented=0 AND book_id := bookId");
+        query.setParameter("bookId", bookId);
+
+        return (List<Copy>) query.getResultList();
     }
 }

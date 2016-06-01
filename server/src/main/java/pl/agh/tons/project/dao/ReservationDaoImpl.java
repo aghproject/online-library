@@ -7,6 +7,7 @@ import pl.agh.tons.project.dao.abstraction.ReservationDao;
 import pl.agh.tons.project.model.Reservation;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 /**
  * Created by psk on 07.05.16.
@@ -16,5 +17,26 @@ public class ReservationDaoImpl extends AbstractDao<Reservation> implements Rese
     @Inject
     public ReservationDaoImpl(Provider<EntityManager> entityManagerFactory) {
         super(entityManagerFactory);
+    }
+
+    @Override
+    public void addReservation(Reservation reservation) {
+        entityManagerFactory.get().persist(reservation);
+    }
+
+    @Override
+    public void removeReservation(Reservation reservation) {
+        entityManagerFactory.get().merge(reservation);
+        entityManagerFactory.get().remove(reservation);
+    }
+
+    @Override
+    public Reservation getReservation(int userId, int bookId) {
+        Query query = entityManagerFactory.get().createQuery("from Reservation WHERE user_id := userId AND" +
+                " book_id := bookId");
+        query.setParameter("user_id", userId);
+        query.setParameter("bookId", bookId);
+
+        return (Reservation) query.getResultList().get(0);
     }
 }

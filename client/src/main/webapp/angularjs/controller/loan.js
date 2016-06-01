@@ -1,11 +1,14 @@
 libraryApp.controller("LoanController", function ($scope, $http) {
-    $scope.copies = {};
+    $scope.books = {};
+    $scope.loans = {};
     $scope.showView = false;
     $scope.response = {};
     $scope.data = {};
+    $scope.showReservation = false;
+    $scope.bookId;
 
-    $scope.getCopies = function(userId) {
-        console.log("getCopies works, userId: " + userId);
+    $scope.getBooks = function(userId) {
+        console.log("getBooks works, userId: " + userId);
         $scope.userId = userId;
         if ($scope.showView) {
             $scope.showView = false;
@@ -14,10 +17,10 @@ libraryApp.controller("LoanController", function ($scope, $http) {
         }
 
         if ($scope.showView) {
-            $http.get("/copy")
+            $http.get("/book")
                 .then(function (response) {
-                    $scope.copies = response.data.content;
-                    console.log($scope.copies);
+                    $scope.books = response.data.content;
+                    console.log($scope.books);
                 }, function (response) {
                 });
         }
@@ -35,21 +38,24 @@ libraryApp.controller("LoanController", function ($scope, $http) {
         if ($scope.showView) {
             $http.get("/loan?user_id="+userId+"")
                 .then(function (response) {
-                    $scope.book = response.data.content;
-                    console.log($scope.book);
+                    $scope.loans = response.data.content;
+                    console.log($scope.loans);
                 }, function (response) {});
         }
     }
     
-    $scope.submit = function (copyId, userId) {
+    $scope.submit = function (bookId, userId) {
+        $scope.bookId = bookId;
         $scope.data = {
             "userId" : userId,
-            "copyId" : copyId
+            "bookId" : bookId
         };
         
         $http.post("/loan", $scope.data)
             .then(function (response) {
                 $scope.response = response.data;
+                /* todo: display response and activate reservation if no free copy of book */
+                $scope.showReservation = true;
                 console.log("loan post request success!!!");
             }, function (response) {});
     };

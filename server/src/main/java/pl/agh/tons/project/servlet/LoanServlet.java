@@ -5,7 +5,6 @@ import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import pl.agh.tons.project.model.Loan;
 import pl.agh.tons.project.model.User;
-import pl.agh.tons.project.service.CopyService;
 import pl.agh.tons.project.service.LoanService;
 
 import javax.servlet.ServletException;
@@ -53,12 +52,20 @@ public class LoanServlet extends HttpServlet {
         httpResponse.setContentType("application/json");
         httpResponse.setCharacterEncoding("UTF-8");
 
-        int bookId = Integer.valueOf((String) requestMap.get("copyId"));
+        int bookId = Integer.valueOf((String) requestMap.get("bookId"));
         int userId = ((Double) requestMap.get("userId")).intValue();
 
-        loanService.loanBook(bookId, userId);
+        boolean rented = loanService.loanBook(bookId, userId);
 
-        Response<User> response = new Response(new String("Ksiazka zostala wypozyczona!"));
+        Response response = new Response<>();
+        if (rented) {
+            response.setSuccess(true);
+            response.setMsg("Ksiazka zostala wypozyczona!");
+        } else {
+            response.setSuccess(false);
+            response.setMsg("Brak wolnych ksiazek. Mozesz zapisac sie do kolejki.");
+        }
+
         httpResponse.getWriter().write(webProtocol.prepareResponse(response));
     }
 }

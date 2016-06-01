@@ -10,7 +10,9 @@ import java.util.List;
 public interface CopyDao extends Dao<Copy> {
     List<Copy> getAllNotRentedBooks();
 
-    void setRented(int copyId);
+    void setRented(Copy copy);
 
     void setNotRented(int copyId);
+
+    List<Copy> getNotRentedCopies(int bookId);
 }

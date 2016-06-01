@@ -32,6 +32,7 @@ public class GuiceServletConfig extends GuiceServletContextListener {
                 serve("/copy").with(CopyServlet.class);
                 serve("/book/author").with(AuthorServlet.class);
                 serve("/book/category").with(CategoryServlet.class);
+                serve("/book/reservation").with(ReservationServlet.class);
 
                 //dao bindings
                 bind(UserDao.class).to(UserDaoImpl.class);
@@ -51,6 +52,7 @@ public class GuiceServletConfig extends GuiceServletContextListener {
                 bind(LoanService.class).to(LoanServiceImpl.class);
                 bind(CopyService.class).to(CopyServiceImpl.class);
                 bind(BookService.class).to(BookServiceImpl.class);
+                bind(ReservationService.class).to(ReservationServiceImpl.class);
                 bind(WebProtocol.class).to(WebProtocolImpl.class);
             }
         });

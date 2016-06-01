@@ -6,7 +6,6 @@ import com.google.inject.persist.Transactional;
 import pl.agh.tons.project.dao.abstraction.CopyDao;
 import pl.agh.tons.project.dao.abstraction.LoanDao;
 import pl.agh.tons.project.dao.abstraction.UserDao;
-import pl.agh.tons.project.model.Book;
 import pl.agh.tons.project.model.Copy;
 import pl.agh.tons.project.model.Loan;
 import pl.agh.tons.project.model.User;
@@ -41,14 +40,21 @@ public class LoanServiceImpl implements LoanService {
 
     @Override
     @Transactional
-    public void loanBook(int copyId, int userId) {
-        copyDao.setRented(copyId);
+    public boolean loanBook(int bookId, int userId) {
+        List<Copy> copies = copyDao.getNotRentedCopies(bookId);
+        if (copies.isEmpty()) {
+            return false;
+        }
+
+        Copy copyToRent = copies.get(0);
+        copyDao.setRented(copyToRent);
 
         User user = userDao.getById(userId);
-        Copy copy = copyDao.getById(copyId);
+        Copy copy = copyDao.getById(bookId);
         Loan newLoan = new Loan(user, copy, new Date(), new Date(), 0);
 
         loanDao.addLoan(newLoan);
+        return true;
     }
 
     @Override
