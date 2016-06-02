@@ -7,6 +7,8 @@ import com.sun.javafx.tk.Toolkit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.agh.tons.project.dao.CopyDaoImpl;
+import pl.agh.tons.project.dao.LoanDaoImpl;
+import pl.agh.tons.project.dao.ReservationDaoImpl;
 import pl.agh.tons.project.dao.abstraction.CopyDao;
 import pl.agh.tons.project.dao.abstraction.LoanDao;
 import pl.agh.tons.project.dao.abstraction.ReservationDao;
@@ -34,8 +36,8 @@ public class TaskContextListener implements ServletContextListener {
                 .getAttribute(Injector.class.getName());
 
         CopyDao copyDao = injector.getInstance(CopyDaoImpl.class);
-        LoanDao loanDao = injector.getInstance(LoanDao.class);
-        ReservationDao reservationDao = injector.getInstance(ReservationDao.class);
+        LoanDao loanDao = injector.getInstance(LoanDaoImpl.class);
+        ReservationDao reservationDao = injector.getInstance(ReservationDaoImpl.class);
 
         reservationScheduler = new ReservationScheduler(reservationDao, copyDao, loanDao);
         reservationScheduler.runTask();
@@ -45,6 +47,6 @@ public class TaskContextListener implements ServletContextListener {
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
         LOG.info("Shutting down web application...");
 
-//        reservationScheduler.cancelTask();
+        reservationScheduler.cancelTask();
     }
 }

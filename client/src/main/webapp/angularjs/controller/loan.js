@@ -58,6 +58,7 @@ libraryApp.controller("LoanController", function ($scope, $http) {
 
                 $scope.showReservation = true;
                 console.log("loan post request success!");
+                console.log("showReservation: " + $scope.showReservation);
             }, function (response) {});
     };
 });

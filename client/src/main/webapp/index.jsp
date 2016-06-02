@@ -5,9 +5,9 @@
     <title>Online Library</title>
 
     <!-- LIBRARIES -->
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-route.js"></script>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-resource.js"></script>
+    <script src="vendor/angular-1.4.5/angular.min.js"></script>
+    <script type="text/javascript" src="vendor/angular-1.4.5/angular-route.min.js"></script>
+    <script type="text/javascript" src="vendor/angular-1.4.5/angular-resource.min.js"></script>
 
     <!-- CONTROLLERS -->
     <script src="angularjs/controller/login.js"></script>
@@ -48,7 +48,7 @@
                     <div ng-controller="LoanController">
                         <ng-include src="'view/loanbook.html'"></ng-include>
 
-                        <div ng-controller="ReservationController" ng-show="showReservation">
+                        <div ng-controller="ReservationController">
                             <ng-include src="view/reservation.html"></ng-include>
                         </div>
                     </div>

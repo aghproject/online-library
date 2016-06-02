@@ -1,2 +1,4 @@
-<p>{{ $response.msg }}</p>
-<button ng-click="reservation(userId, bookId)">Rezerwuj ksiazke</button>
+<div ng-show="showReservation">
+    <p>{{ $response.msg }}</p>
+    <button ng-click="reservation(userId, bookId)">Rezerwuj ksiazke</button>
+</div>

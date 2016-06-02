@@ -1,7 +1,5 @@
 package pl.agh.tons.project.service.scheduler;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +10,6 @@ import pl.agh.tons.project.model.Copy;
 import pl.agh.tons.project.model.Loan;
 import pl.agh.tons.project.model.Reservation;
 
-import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -58,23 +55,24 @@ public class ReservationScheduler {
             }
         };
 
-        reservationHandler = scheduler.scheduleAtFixedRate(checkReservation, 10, 10, SECONDS);
+        reservationHandler = scheduler.scheduleAtFixedRate(checkReservation, 40, 10, SECONDS);
 
-        scheduler.schedule(new Runnable() {
-            public void run() {
-                reservationHandler.cancel(true);
-            }
-        }, 60 * 60, SECONDS);
+//        scheduler.schedule(new Runnable() {
+//            public void run() {
+//                reservationHandler.cancel(true);
+//            }
+//        }, 60 * 60, SECONDS);
     }
 
-//    public void cancelTask() {
-//        reservationHandler.cancel(true);
-//    }
+    public void cancelTask() {
+        reservationHandler.cancel(true);
+    }
 
     /**
      * Check reservations and update corresponding tables in database
      * Task executed in separate thread in background
      */
+    @Transactional
     private void job() {
         LOG.debug("Reservation check starting...");
         LOG.debug("reservationDao: {}", reservationDao);
@@ -86,23 +84,29 @@ public class ReservationScheduler {
         LOG.debug("reservationsMap created...");
 
         List<Reservation> reservations = reservationDao.getAll();
-        LOG.debug("reservations list: {}", reservations);
-//
-//        for (Reservation reservation : reservations) {
-//            reservationsMap.put(reservation.getBook().getId(), reservation);
-//        }
-//
-//        List<Copy> copies = copyDao.getNotRentedCopies(new ArrayList<>(reservationsMap.keySet()));
-//
-//        LOG.debug("reservations map: {}", reservationsMap.toString());
-//        LOG.debug("copies list: {}", copies.toString());
-//
-//        persistReservations(copies, reservationsMap);
+        LOG.debug("reservations list: {}", reservations.toString());
+        if (!reservations.isEmpty()) {
+            for (Reservation reservation : reservations) {
+                reservationsMap.put(reservation.getBook().getId(), reservation);
+            }
+        }
+
+        List<Copy> copies = new ArrayList<>();
+        if (!reservations.isEmpty()) {
+            copies = copyDao.getNotRentedCopies(new ArrayList<>(reservationsMap.keySet()));
+        }
+
+        if (!reservations.isEmpty() && !copies.isEmpty()) {
+            LOG.debug("reservations map: {}", reservationsMap.toString());
+            LOG.debug("copies list: {}", copies.toString());
+            persistReservations(copies, reservationsMap);
+        }
 
         LOG.debug("Reservation check ending...");
     }
 
     private void persistReservations(List<Copy> copies, Map<Integer, Reservation> reservationsMap) {
+        LOG.debug("persist reservations ...");
         for (Copy copy : copies) {
             if (reservationsMap.get(copy.getBook().getId()) != null) {
                 /* add new loan to database*/

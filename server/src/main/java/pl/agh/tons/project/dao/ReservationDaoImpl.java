@@ -13,7 +13,6 @@ import javax.persistence.Query;
 /**
  * Created by psk on 07.05.16.
  */
-@Singleton
 public class ReservationDaoImpl extends AbstractDao<Reservation> implements ReservationDao {
 
     @Inject
