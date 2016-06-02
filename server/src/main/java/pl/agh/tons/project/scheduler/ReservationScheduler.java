@@ -17,8 +17,9 @@ public class ReservationScheduler {
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
+    private ScheduledFuture<?> reservationHandler;
     /**
-     * Check reservations every 10 seconds and update reservation and loan table in database
+     * Check reservations by executing job() method every 10 seconds
      */
     public void runTask() {
 
@@ -28,17 +29,25 @@ public class ReservationScheduler {
             }
         };
 
-        final ScheduledFuture<?> reservationHandler = scheduler.scheduleAtFixedRate(checkReservation, 10, 10, SECONDS);
+        reservationHandler = scheduler.scheduleAtFixedRate(checkReservation, 10, 10, SECONDS);
 
-        scheduler.schedule(new Runnable() {
-            public void run() {
-                reservationHandler.cancel(true);
-            }
-        }, 60 * 60, SECONDS);
+//        scheduler.schedule(new Runnable() {
+//            public void run() {
+//                reservationHandler.cancel(true);
+//            }
+//        }, 60 * 60, SECONDS);
     }
 
-    public void job() {
-        LOG.debug("Execution of scheduled task!");
+    public void cancelTask() {
+        reservationHandler.cancel(true);
+    }
+
+    /**
+     * Check reservations and update corresponding tables in database
+     * Task executed in background
+     */
+    private void job() {
+        LOG.debug("Reservation check starting...");
 
         // todo: get reservations from database
         // todo: get copies from database
