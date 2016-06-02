@@ -17,7 +17,7 @@ public class Loan implements Serializable {
 
     @ManyToOne
     @JoinColumn(name="user_id", nullable = false)
-    private transient User user;
+    private User user;
 
     @ManyToOne
     @JoinColumn(name="copy_id", nullable = false)
