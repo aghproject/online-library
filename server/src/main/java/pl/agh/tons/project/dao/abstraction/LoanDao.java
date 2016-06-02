@@ -9,4 +9,6 @@ public interface LoanDao extends Dao<Loan> {
     void addLoan(Loan loan);
 
     void setLoan(Loan loan);
+
+    Loan getLoan(int copyId, int userId);
 }

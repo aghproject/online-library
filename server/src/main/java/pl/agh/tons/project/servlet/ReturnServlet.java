@@ -3,8 +3,6 @@ package pl.agh.tons.project.servlet;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.slf4j.Logger;
-import pl.agh.tons.project.model.Loan;
-import pl.agh.tons.project.model.User;
 import pl.agh.tons.project.service.LoanService;
 
 import javax.servlet.ServletException;
@@ -20,7 +18,7 @@ import java.util.Map;
 @Singleton
 public class ReturnServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(LoanServlet.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(ReturnServlet.class);
 
     private LoanService loanService;
     private WebProtocol webProtocol;
@@ -39,12 +37,14 @@ public class ReturnServlet extends HttpServlet {
         httpResponse.setContentType("application/json");
         httpResponse.setCharacterEncoding("UTF-8");
 
-        int bookId = Integer.valueOf((String) requestMap.get("copyId"));
+        int copyId = Integer.valueOf((String) requestMap.get("copyId"));
         int userId = ((Double) requestMap.get("userId")).intValue();
 
-        loanService.returnBook(bookId, userId);
+        loanService.returnBook(copyId, userId);
 
-        Response<User> response = new Response(new String("Ksiazka zostala zwrocona!"));
+        Response response = new Response();
+        response.setMsg("Ksiazka zostala zwrocona!");
+        response.setSuccess(true);
         httpResponse.getWriter().write(webProtocol.prepareResponse(response));
     }
 }

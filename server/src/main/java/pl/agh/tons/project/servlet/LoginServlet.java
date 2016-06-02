@@ -1,15 +1,12 @@
 package pl.agh.tons.project.servlet;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.agh.tons.project.model.User;
-import pl.agh.tons.project.scheduler.ReservationScheduler;
 import pl.agh.tons.project.service.UserService;
 
-import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -50,6 +47,13 @@ public class LoginServlet extends HttpServlet {
         User user = userService.getByEmailAndPassword(email, password);
 
         Response<User> response = new Response(user);
+        if (user != null) {
+            response.setMsg("Witamy!");
+            response.setSuccess(true);
+        } else {
+            response.setMsg("Nieprawidlowe dane uzytkownika!");
+        }
+
         httpResponse.getWriter().write(webProtocol.prepareResponse(response));
     }
 }

@@ -3,6 +3,7 @@
  */
 libraryApp.controller("ReservationController", function ($scope, $http) {
     $scope.data = {};
+    $scope.response = {};
 
     $scope.reservation = function(userId, bookId) {
         console.log("reservation works, userId: " + userId);
@@ -14,9 +15,9 @@ libraryApp.controller("ReservationController", function ($scope, $http) {
         $http.post("/book/reservation", $scope.data)
             .then(function (response) {
                 $scope.response = response.data;
-                /* todo: display response with number on waiting list */
+                /* todo: display response msg */
 
-                console.log("loan post request success!!!");
+                console.log("reservation post request success!");
             }, function (response) {});
     };
 });

@@ -1,6 +1,5 @@
 package pl.agh.tons.project.service;
 
-import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import pl.agh.tons.project.dao.abstraction.CopyDao;
@@ -23,8 +22,6 @@ public class LoanServiceImpl implements LoanService {
     private CopyDao copyDao;
 
     private UserDao userDao;
-
-    private Gson gson = new Gson();
 
     @Inject
     public LoanServiceImpl(LoanDao loanDao, CopyDao copyDao, UserDao userDao) {
@@ -62,13 +59,14 @@ public class LoanServiceImpl implements LoanService {
     public void returnBook(int copyId, int userId) {
         copyDao.setNotRented(copyId);
 
-        User user = userDao.getById(userId);
-        Copy copy = copyDao.getById(copyId);
-        // todo: get loan from database and update (not create new)
-        Loan loan = new Loan(user, copy, new Date(), new Date(), 1);
+        Loan loan = loanDao.getLoan(copyId, userId);
+        loan.setArchive(1);
 
         loanDao.setLoan(loan);
+
         //todo: check if return date is valid (based on dates in loan table)
+        Date expectedReturnDate = loan.getEndDate();
+        Date actualReturnDate = new Date();
     }
 
 }

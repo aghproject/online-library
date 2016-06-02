@@ -31,6 +31,16 @@ public class LoanDaoImpl extends AbstractDao<Loan> implements LoanDao {
     }
 
     @Override
+    public Loan getLoan(int copyId, int userId) {
+        Query query = entityManagerFactory.get().createQuery("from Loan WHERE copy.id = :copyId AND " +
+                "user.id = :userId");
+        query.setParameter("copyId", copyId);
+        query.setParameter("userId", userId);
+
+        return (Loan) query.getResultList().get(0);
+    }
+
+    @Override
     public List<Loan> getByForeignKey(String column, int id) {
 
         Query query =  entityManagerFactory.get().createQuery("from "+ clazz.getSimpleName() +

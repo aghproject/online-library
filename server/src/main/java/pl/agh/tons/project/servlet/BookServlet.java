@@ -4,10 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import pl.agh.tons.project.model.Book;
-import pl.agh.tons.project.model.Loan;
-import pl.agh.tons.project.model.User;
 import pl.agh.tons.project.service.BookService;
-import pl.agh.tons.project.service.LoanService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -22,7 +19,7 @@ import java.util.List;
 @Singleton
 public class BookServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(LoanServlet.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(BookServlet.class);
 
     private BookService bookService;
     private WebProtocol webProtocol;
@@ -42,6 +39,8 @@ public class BookServlet extends HttpServlet {
         List<Book> books = bookService.getAll();
 
         Response<Book> response = new Response(books);
+        response.setMsg("Wszystkie dostepne ksiazki w bibliotece.");
+        response.setSuccess(true);
         httpResponse.getWriter().write(webProtocol.prepareResponse(response));
     }
 }

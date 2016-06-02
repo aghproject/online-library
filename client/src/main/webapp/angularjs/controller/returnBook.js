@@ -24,7 +24,7 @@ libraryApp.controller("BookReturnController", function ($scope, $http) {
         $http.post("/loan/return", $scope.data)
             .then(function (response) {
                 $scope.response = response.data;
-                console.log("return book post request success!!!");
+                console.log("return book post request success!");
             }, function (response) {});
     };
 });

@@ -19,7 +19,7 @@ import java.util.List;
 @Singleton
 public class CopyServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(LoanServlet.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(CopyServlet.class);
 
     private CopyService copyService;
     private WebProtocol webProtocol;
@@ -39,6 +39,8 @@ public class CopyServlet extends HttpServlet {
         List<Copy> copies = copyService.getAllNotRentedBooks();
 
         Response<Copy> response = new Response(copies);
+        response.setMsg("Wszystkie kopie ksiazek dostepne do wypozyczenia.");
+        response.setSuccess(true);
         httpResponse.getWriter().write(webProtocol.prepareResponse(response));
     }
 

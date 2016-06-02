@@ -55,8 +55,9 @@ libraryApp.controller("LoanController", function ($scope, $http) {
             .then(function (response) {
                 $scope.response = response.data;
                 /* todo: display response and activate reservation if no free copy of book */
+
                 $scope.showReservation = true;
-                console.log("loan post request success!!!");
+                console.log("loan post request success!");
             }, function (response) {});
     };
 });

@@ -42,7 +42,7 @@ public class ReservationServlet extends HttpServlet {
 
         reservationService.reserveBook(userId, bookId);
 
-        Response response = new Response<>();
+        Response response = new Response();
         response.setSuccess(true);
         response.setMsg("Rezerwacja na ksiazke zostala przyjeta!");
 

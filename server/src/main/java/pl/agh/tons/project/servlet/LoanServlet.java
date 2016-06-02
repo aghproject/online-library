@@ -41,6 +41,8 @@ public class LoanServlet extends HttpServlet {
         List<Loan> loans = loanService.getLoans(Integer.valueOf(httpRequest.getParameter("user_id")));
 
         Response<User> response = new Response(loans);
+        response.setMsg("Twoje wypozyczone ksiazki.");
+        response.setSuccess(true);
         httpResponse.getWriter().write(webProtocol.prepareResponse(response));
     }
 
@@ -57,7 +59,7 @@ public class LoanServlet extends HttpServlet {
 
         boolean rented = loanService.loanBook(bookId, userId);
 
-        Response response = new Response<>();
+        Response response = new Response();
         if (rented) {
             response.setSuccess(true);
             response.setMsg("Ksiazka zostala wypozyczona!");
