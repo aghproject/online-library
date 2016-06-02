@@ -1,7 +1,7 @@
 package pl.agh.tons.project.config;
 
 import com.sun.istack.internal.logging.Logger;
-import pl.agh.tons.project.scheduler.ReservationScheduler;
+import pl.agh.tons.project.service.scheduler.ReservationScheduler;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;

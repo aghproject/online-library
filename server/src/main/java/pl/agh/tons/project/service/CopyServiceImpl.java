@@ -21,6 +21,6 @@ public class CopyServiceImpl implements CopyService {
 
     @Override
     public List<Copy> getAllNotRentedBooks() {
-        return copyDao.getAllNotRentedBooks();
+        return copyDao.getAllNotRentedCopies();
     }
 }

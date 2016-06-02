@@ -21,7 +21,7 @@ public class CopyDaoImpl extends AbstractDao<Copy> implements CopyDao {
     }
 
     @Override
-    public List<Copy> getAllNotRentedBooks() {
+    public List<Copy> getAllNotRentedCopies() {
         Query query = entityManagerFactory.get().createQuery("from Copy WHERE rented=0");
 
         return (List<Copy>) query.getResultList();
@@ -48,5 +48,28 @@ public class CopyDaoImpl extends AbstractDao<Copy> implements CopyDao {
         query.setParameter("bookId", bookId);
 
         return (List<Copy>) query.getResultList();
+    }
+
+    @Override
+    public List<Copy> getNotRentedCopies(List<Integer> bookIds) {
+        StringBuilder sql = new StringBuilder("from Copy WHERE ");
+        String or = "";
+        for (int i=0; i<bookIds.size(); i++) {
+            sql.append(or);
+            sql.append("book.id = :bookId" + i);
+            or = " OR ";
+        }
+
+        Query query = entityManagerFactory.get().createQuery(sql.toString());
+        for (int i=0; i<bookIds.size(); i++) {
+            query.setParameter("bookId"+i, bookIds.get(i));
+        }
+
+        return (List<Copy>) query.getResultList();
+    }
+
+    @Override
+    public void setCopy(Copy copy) {
+        entityManagerFactory.get().merge(copy);
     }
 }
