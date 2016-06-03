@@ -1,9 +1,6 @@
 package pl.agh.tons.project.config;
 
-import com.google.inject.Inject;
 import com.google.inject.Injector;
-import com.google.inject.Provider;
-import com.sun.javafx.tk.Toolkit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.agh.tons.project.dao.CopyDaoImpl;
@@ -14,7 +11,6 @@ import pl.agh.tons.project.dao.abstraction.LoanDao;
 import pl.agh.tons.project.dao.abstraction.ReservationDao;
 import pl.agh.tons.project.service.scheduler.ReservationScheduler;
 
-import javax.persistence.EntityManager;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 

@@ -12,7 +12,6 @@
     <!-- CONTROLLERS -->
     <script src="angularjs/controller/login.js"></script>
     <script src="angularjs/controller/loan.js"></script>
-    <script src="angularjs/controller/reservation.js"></script>
     <script src="angularjs/controller/returnBook.js"></script>
 
     <!-- CSS -->

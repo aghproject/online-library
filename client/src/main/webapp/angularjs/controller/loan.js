@@ -13,6 +13,7 @@ libraryApp.controller("LoanController", function ($scope, $http) {
         $scope.userId = userId;
         if ($scope.showView) {
             $scope.showView = false;
+            $scope.showLoanMsg = false;
         } else {
             $scope.showView = true;
         }
@@ -32,6 +33,7 @@ libraryApp.controller("LoanController", function ($scope, $http) {
         $scope.userId = userId;
         if ($scope.showView) {
             $scope.showView = false;
+            $scope.showLoanMsg = false;
         } else {
             $scope.showView = true;
         }
@@ -45,7 +47,7 @@ libraryApp.controller("LoanController", function ($scope, $http) {
         }
     }
     
-    $scope.submit = function (bookId, userId) {
+    $scope.submitLoan = function (bookId, userId) {
         $scope.bookId = bookId;
         $scope.data = {
             "userId" : userId,
@@ -63,6 +65,22 @@ libraryApp.controller("LoanController", function ($scope, $http) {
 
                 console.log("loan post request success!");
                 console.log("showReservationButton: " + $scope.showReservationButton);
+            }, function (response) {});
+    };
+
+    $scope.reservation = function(userId, bookId) {
+        console.log("reservation works, userId: " + userId);
+        $scope.data = {
+            "userId" : userId,
+            "bookId" : bookId
+        }
+
+        $http.post("/book/reservation", $scope.data)
+            .then(function (response) {
+                $scope.response = response.data;
+                $scope.showReservationButton = false;
+                
+                console.log("reservation post request success!");
             }, function (response) {});
     };
 });

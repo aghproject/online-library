@@ -14,7 +14,7 @@
         <param name="append" value="false" />
         <param name="maxFileSize" value="10MB" />
         <param name="maxBackupIndex" value="10" />
-        <param name="file" value="/vagrant/vagrant/logs/app.log" />
+        <param name="file" value="${user.home}/logs/app.log" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern"
                    value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" />
@@ -25,7 +25,7 @@
         <param name="append" value="false" />
         <param name="maxFileSize" value="10MB" />
         <param name="maxBackupIndex" value="10" />
-        <param name="file" value="/vagrant/vagrant/logs/project.log" />
+        <param name="file" value="${user.home}/logs/project.log" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern"
                    value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" />

@@ -32,6 +32,7 @@ service apache2 start
 
 # file permission for logging, timezone
 sudo chmod -R 777 /vagrant/vagrant/
+mkdir ~/logs
 timedatectl set-timezone Europe/Warsaw
 
 cd /vagrant

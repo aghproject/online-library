@@ -1,13 +1,11 @@
 <button ng-click="getBooks(userId)">Wypozycz ksiazke</button>
 <div ng-show="showLoanMsg">
     {{ response.msg }}
-    <div ng-controller="ReservationController">
-        <ng-include src="view/reservationbook.html"></ng-include>
-    </div>
+    <button ng-click="reservation(userId, bookId)" type="button" ng-show="showReservationButton">Rezerwuj ksiazke</button>
 </div>
 
 <div ng-show="showView">
-    <form ng-submit="submit(bookId, userId)">
+    <form ng-submit="submitLoan(bookId, userId)">
         <p>
             Podaj id ksiazki: <input type="text" name="bookId" ng-model="bookId"/>
             &nbsp;<input type="submit" name="submit" value="Zatwierdz"/>

@@ -1,4 +1,5 @@
 <button ng-click="returnBook(userId)">Zwroc ksiazke</button>
+<div ng-show="showReturnMsg">{{ response.msg }}</div>
 <div ng-show="showView">
     <form ng-submit="submit(copyId, userId)">
         <p>
