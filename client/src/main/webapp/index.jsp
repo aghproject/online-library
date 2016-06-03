@@ -47,10 +47,6 @@
                     </div>
                     <div ng-controller="LoanController">
                         <ng-include src="'view/loanbook.html'"></ng-include>
-
-                        <div ng-controller="ReservationController">
-                            <ng-include src="view/reservation.html"></ng-include>
-                        </div>
                     </div>
                     <div ng-controller="BookReturnController">
                         <ng-include src="'view/returnbook.html'"></ng-include>

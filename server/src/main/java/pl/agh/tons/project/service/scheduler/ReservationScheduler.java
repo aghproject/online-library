@@ -73,7 +73,7 @@ public class ReservationScheduler {
      * Task executed in separate thread in background
      */
     @Transactional
-    private void job() {
+    public void job() {
         LOG.debug("Reservation check starting...");
         LOG.debug("reservationDao: {}", reservationDao);
         LOG.debug("copyDao: {}", copyDao);
