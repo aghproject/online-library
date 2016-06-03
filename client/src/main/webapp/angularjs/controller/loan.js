@@ -4,7 +4,8 @@ libraryApp.controller("LoanController", function ($scope, $http) {
     $scope.showView = false;
     $scope.response = {};
     $scope.data = {};
-    $scope.showReservation = false;
+    $scope.showReservationButton = false;
+    $scope.showLoanMsg = false;
     $scope.bookId;
 
     $scope.getBooks = function(userId) {
@@ -54,11 +55,14 @@ libraryApp.controller("LoanController", function ($scope, $http) {
         $http.post("/loan", $scope.data)
             .then(function (response) {
                 $scope.response = response.data;
-                /* todo: display response and activate reservation if no free copy of book */
+                $scope.showLoanMsg = true;
 
-                $scope.showReservation = true;
+                if (response.data.success == false) {
+                    $scope.showReservationButton = true;
+                }
+
                 console.log("loan post request success!");
-                console.log("showReservation: " + $scope.showReservation);
+                console.log("showReservationButton: " + $scope.showReservationButton);
             }, function (response) {});
     };
 });

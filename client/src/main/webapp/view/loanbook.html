@@ -1,4 +1,5 @@
 <button ng-click="getBooks(userId)">Wypozycz ksiazke</button>
+<div ng-show="showLoanMsg">{{ response.msg }}</div>
 <div ng-show="showView">
     <form ng-submit="submit(bookId, userId)">
         <p>
