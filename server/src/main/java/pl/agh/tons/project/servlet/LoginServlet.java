@@ -1,13 +1,12 @@
 package pl.agh.tons.project.servlet;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.agh.tons.project.model.User;
 import pl.agh.tons.project.service.UserService;
 
-import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -21,13 +20,15 @@ import java.util.Map;
 @Singleton
 public class LoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(LoginServlet.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LoginServlet.class);
 
     private UserService userService;
     private WebProtocol webProtocol;
 
     @Inject
     public LoginServlet(UserService userService, WebProtocol webProtocol) {
+        LOG.debug("Create login servlet...");
+
         this.userService = userService;
         this.webProtocol = webProtocol;
     }
@@ -46,6 +47,13 @@ public class LoginServlet extends HttpServlet {
         User user = userService.getByEmailAndPassword(email, password);
 
         Response<User> response = new Response(user);
+        if (user != null) {
+            response.setMsg("Witamy!");
+            response.setSuccess(true);
+        } else {
+            response.setMsg("Nieprawidlowe dane uzytkownika!");
+        }
+
         httpResponse.getWriter().write(webProtocol.prepareResponse(response));
     }
 }

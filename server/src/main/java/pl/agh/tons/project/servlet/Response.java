@@ -4,21 +4,13 @@ package pl.agh.tons.project.servlet;
  * Object that is used to communicate between client and server
  */
 class Response<T> {
-    private boolean success;
-    private String msg;
+    private boolean success = false;
+    private String msg = "";
     private T content;
 
     public Response() {}
 
     public Response(T content) {
-        if (content == null) {
-            this.success = false;
-            this.msg = "Nieprawidlowe dane uzytkownika!";
-        } else {
-            this.success = true;
-            this.msg = "Twoje wypozyczone ksiazki:";
-        }
-
         this.content = content;
     }
 

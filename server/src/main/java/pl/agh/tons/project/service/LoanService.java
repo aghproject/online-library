@@ -1,8 +1,6 @@
 package pl.agh.tons.project.service;
 
-import pl.agh.tons.project.model.Book;
 import pl.agh.tons.project.model.Loan;
-import pl.agh.tons.project.model.User;
 
 import java.util.List;
 
@@ -13,6 +11,8 @@ public interface LoanService {
 
     List<Loan> getLoans(int userId);
 
-    void getReturnBook(Book book, User user);
+    boolean loanBook(int copyId, int userId);
+
+    void returnBook(int copyId, int userId);
 
 }

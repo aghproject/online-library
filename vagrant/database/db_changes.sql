@@ -1,4 +1,6 @@
-USE `testlibrary`;
+drop database if exists onlinelibrary;
+create database onlinelibrary;
+use onlinelibrary;
 
 CREATE TABLE IF NOT EXISTS `user` (
   `id` INT NOT NULL AUTO_INCREMENT,
@@ -11,7 +13,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 ) ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `address` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `street` VARCHAR(45) NULL,
   `building_num` VARCHAR(45) NULL,
   `local_num` VARCHAR(45) NULL,
@@ -28,7 +30,7 @@ CREATE TABLE IF NOT EXISTS `address` (
 ) ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `author` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NULL,
   `lastName` VARCHAR(45) NULL,
   `desc` TEXT NULL,
@@ -36,14 +38,14 @@ CREATE TABLE IF NOT EXISTS `author` (
 ) ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `category` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NULL,
   `desc` TEXT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `book` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `author_id` INT NULL,
   `title` VARCHAR(45) NULL,
   `desc` TEXT NULL,
@@ -62,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `book` (
 ) ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `reservation` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `book_id` INT NULL,
   `user_id` INT NULL,
   PRIMARY KEY (`id`),
@@ -79,8 +81,9 @@ CREATE TABLE IF NOT EXISTS `reservation` (
 ) ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `copy` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `book_id` INT NULL,
+  `rented` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_copy_1`
   FOREIGN KEY (`book_id`)
@@ -90,11 +93,12 @@ CREATE TABLE IF NOT EXISTS `copy` (
 ) ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `loan` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `copy_id` INT NULL,
   `user_id` INT NULL,
   `start_date` DATE NULL,
   `end_date` VARCHAR(45) NULL,
+  `archive` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_loan_1`
   FOREIGN KEY (`copy_id`)
@@ -109,12 +113,12 @@ CREATE TABLE IF NOT EXISTS `loan` (
 ) ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `fine` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `user_id` INT NULL,
   `copy_id` INT NULL,
   `due_date` DATE NULL,
   `in_date` DATE NULL,
-  `value` VARCHAR(45) NULL,
+  `value` DECIMAL NULL,
   `paid` TINYINT(1) NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_fine_1`
@@ -130,7 +134,7 @@ CREATE TABLE IF NOT EXISTS `fine` (
 ) ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `feedback` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `book_id` INT NOT NULL,
   `user_id` INT NOT NULL,
   `comment` TEXT NULL,
@@ -147,4 +151,24 @@ CREATE TABLE IF NOT EXISTS `feedback` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 ) ENGINE = InnoDB;
+
+
+INSERT INTO `user` VALUES (1, 'Peter', 'Test', 'test@test.pl', 'test', 'user');
+INSERT INTO `address` VALUES (1, 'ulica', '10', '33', '32-432', 'Kraków', 'Polska', 1);
+INSERT INTO `author` VALUES (1, 'Adam', 'Mickiewicz', 'jakis tam opis');
+INSERT INTO `category` VALUES (1, 'Przygodowe', 'Opis kategorii przygodowe');
+INSERT INTO `book` VALUES (1, 1, 'W pustyni i puszczy', 'Ksiazka o puszczy', 1);
+INSERT INTO `book` VALUES (2, 1, 'Effective Java', 'Ksiazka o Javie', 1);
+INSERT INTO `book` VALUES (3, 1, 'AngularJS', 'Ksiazka o Javascript', 1);
+INSERT INTO `reservation` VALUES (1, 1, 1);
+INSERT INTO `copy` VALUES (1, 1, 1);
+INSERT INTO `copy` VALUES (2, 2, 1);
+INSERT INTO `copy` VALUES (3, 3, 1);
+INSERT INTO `copy` VALUES (4, 2, 0);
+INSERT INTO `copy` VALUES (5, 3, 0);
+INSERT INTO `loan` VALUES (1, 1, 1, '2015-12-12', '2015-01-01', 0);
+INSERT INTO `loan` VALUES (2, 2, 1, '2015-12-19', '2015-02-01', 0);
+INSERT INTO `loan` VALUES (3, 3, 1, '2015-12-23', '2015-04-01', 0);
+INSERT INTO `fine` VALUES (1, 1, 1, '2016-01-01', '2016-10-01', 10.00, '0');
+INSERT INTO `feedback` VALUES (1, 1, 1, 'komentarz do pustyni i puszczy', 3);
 
