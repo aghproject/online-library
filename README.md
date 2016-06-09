@@ -14,4 +14,5 @@
 
 ## Klient
 
-* JavaScript - brak implementacji
+* JavaScript - AngularJS
+* HTML & CSS
